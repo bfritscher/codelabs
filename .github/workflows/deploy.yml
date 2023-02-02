@@ -9,17 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: 14
 
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with:
           go-version: 1.20
       - run: go install github.com/googlecodelabs/tools/claat@latest
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@@v3
         id: cache-npm-packages
         with:
           path: |
