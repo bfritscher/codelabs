@@ -2,7 +2,7 @@ summary: Getting Started with Vue.js Project Setup
 id: vue-dev-setup
 categories: Web
 tags: vuejs
-status: Published 
+status: Published
 authors: Boris Fritscher
 feedback link: https://github.com/bfritscher/cours-pweb-slides
 
@@ -59,6 +59,7 @@ Use vue/vite to create a new project.
 C:\temp> npm init vue@latest
 ```
 
+### Select your preferred options
 ![](assets/vue-create.png)
 
 
@@ -73,17 +74,23 @@ $ cd labo-vue
 $ code .
 ```
 
-- install [vscode Vue Volar extension](vscode:extension/Vue.volar)
-- install [vscode Prettier extension](vscode:extension/esbenp.prettier-vscode)
-- install [vscode eslint extension](vscode:extension/dbaeumer.vscode-eslint)
+### Install recommended extensions
 
-- install [vue chrome devtool extension](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+#### VS Code
+- [vscode Vue Volar extension](vscode:extension/Vue.volar)
+- [vscode Prettier extension](vscode:extension/esbenp.prettier-vscode)
+- [vscode eslint extension](vscode:extension/dbaeumer.vscode-eslint)
+
+#### Chrome
+- [vue chrome devtool extension](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
 
 
 
 ## Install Project Dependencies
 
+<aside class="negative">
 Must be done inside the project's root folder!
+</aside>
 
 ```sh
 $ npm install
@@ -100,18 +107,28 @@ Start the development server
 ```sh
 npm run dev
 ```
+<aside class="positive">
+Edit a file and watch livereload in action.
+</aside>
 
-edit a file and watch livereload in action.
+For example in `./index.html` add:
 
-For example add `<h1>Test vue!</h1>` to `<body>` in `./index.html`.
+```
+<h1>Test vue!</h1>
+<!-- inside <body> -->
+```
 
+<aside class="positive">
+Stop the server with <i>ctrl+c</i>
+</aside>
 
-Stop the server with `ctrl+c`
 
 
 
 
 ## Cleanup
+
+We want to simplify the starting project for now
 
 - Delete `src/assets/base.css`
 - Empty  `src/assets/main.css`
@@ -147,7 +164,11 @@ export default {
 
 ## Add Bootstrap and Font Awesome
 
-Check package.json (before and after)
+Bootstrap is a CSS Gird and Component library.
+
+Font Awesome provides a large number of free icons.
+
+Check `package.json` (before and after)
 
 1. Add dependencies
 
@@ -155,6 +176,12 @@ Check package.json (before and after)
 $ npm install --save bootstrap @popperjs/core
 $ npm install --save @fortawesome/fontawesome-free
 ```
+
+<aside class="positive">
+Save is important because it will add an entry to the package.json.
+This allows to reinstall all the project's required dependencies with npm install.
+</aside>
+
 
 
 2. Inside `src/main.js` add imports
@@ -171,17 +198,19 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 Check that the icon works:
 
-<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="ice-cream" class="svg-inline--fa fa-ice-cream fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#dc3545" d="M368 160h-.94a144 144 0 1 0-286.12 0H80a48 48 0 0 0 0 96h288a48 48 0 0 0 0-96zM195.38 493.69a31.52 31.52 0 0 0 57.24 0L352 288H96z"></path></svg>
+<img src="assets/fa-ice-cream.svg" width="48" />
 
 
 
-Add another icon to the `App.vue template inside the button`
-
-https://fontawesome.com/icons
+### Add another icon to the `App.vue`
 
 ```html
 <i class="fa-solid fa-cake-candles"></i>
 ```
+
+<aside class="positive">
+Looking for more? More icons on <a href="https://fontawesome.com/icons">https://fontawesome.com/icons</a>
+</aside>
 
 
 
@@ -193,18 +222,24 @@ Lets try another bootstrap look.
 npm install bootswatch --save
 ```
 
-https://bootswatch.com/
+<aside class="positive">
+Looking for more? More themes on <a href="https://bootswatch.com/">https://bootswatch.com/</a>
+</aside>
 
-try different CSS files from bootswatch in `main.js`
+### Try different CSS files from bootswatch in `main.js`
 
 ```javascript
 import "bootswatch/dist/darkly/bootstrap.min.css";
 ```
 
+<aside class="positive">
+Did you notice the live-reload of the local server?
+</aside>
+
 
 ## Test linting
 
-We installed two linter:
+We installed two linter to help use follow best practice in code formatting and quality:
 
 - Prettier for code formatting
 - ESLint for code quality
@@ -215,12 +250,16 @@ Run the command and check how the files are changed.
 $ npm run lint
 ```
 
-Copy this line into main.js and see what happens.
+Copy this line into `main.js` and see what happens.
 
 ```js
 let myvar = 'Hello World'
 ```
 
+<aside class="positive">
+What are all the errors?<br/>
 Check the PROBLEMS tab of vscode
 (right-click to fix problem).
+</aside>
 
+### You now have a fully working project and know how to install dependencies and how to write clean code.

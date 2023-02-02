@@ -14,7 +14,7 @@ RUN wget https://go.dev/dl/go1.20.linux-amd64.tar.gz \
     && rm go1.20.linux-amd64.tar.gz
 
 RUN su node -c "/usr/local/go/bin/go install github.com/googlecodelabs/tools/claat@latest"
-RUN sudo -u node npm install -g gulp-cli
+RUN sudo -u node npm install -g gulp-cli nodemon
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
 # RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"

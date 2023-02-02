@@ -7,7 +7,10 @@
     "^lang-.*"
   ],
   "logoUrl": "/images/logo.png",
-  "toolbarBgColor": "#37474F",
+  "toolbarBgColor": "#0693e3",
   "sort": "mainCategory",
-  "pins": []
+  "pins": [
+    "vue-dev-setup",
+    "vue-github-deploy"
+  ]
 }

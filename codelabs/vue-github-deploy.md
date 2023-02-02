@@ -2,28 +2,25 @@ summary: Deploying a Vue.js Project on GitHub
 id: vue-github-deploy
 categories: Web
 tags: vuejs
-status: Published 
+status: Published
 authors: Boris Fritscher
 feedback link: https://github.com/bfritscher/cours-pweb-slides
 
-# Deploying a Vue.js Project on GitHub
+# Deploying a Vue.js Project on GitHub Pages
+
+## Getting Started
+
+We want to use the static hosting services offered by [github.com](https://github.com). In addition, we will also use their server-side actions to build the project before deploying it automatically on each commit.
+
+1. Create a [github.com](https://github.com) account.
+2. Install [git-scm](https://git-scm.com/download/) to have a version of `git`.
 
 
-# Lab 2: deploy to github pages
+## Use LF also on windows
 
-![](images/yeoman-ship.png)<!-- .element: class="w-30" -->
+We want to work with LF line endings instead of CRLF.
 
-
-
-### Step 0: Install
-
-Create a [github.com](https://github.com) account and install [git-scm.com](https://git-scm.com/download/win) to have a version of `git`.
-
-
-
-### Step 0: Use LF also on windows
-
-Create `.gitattributes` with content:
+Create `.gitattributes` at the root of your project with the following content:
 
 ```txt
 # Force all line endings to be \n
@@ -77,34 +74,46 @@ Create `.gitattributes` with content:
 
 
 
-### Step 1: Git Main
+## Git Repositry
 
-- Create github repository [labo-xyz](https://classroom.github.com/a/KHAPN3aT)
-- Init a git repository
-- Add and Commit your code.
-- Add remote
-- Push your code to Github.
+Use git to create a local repostiory and connect it to a github online repository.
+
+<aside class="positive">
+Looking for more? Checkout <a href="https://bfritscher.github.io/cours-git-slides/#/">GIT Workshop<a> or <a href="https://git-scm.com/doc">git documentation</a>
+</aside>
 
 
+1. Create a github repository
+2. Init a local git repository
+3. Add and Commit your code
+4. Add the github remote
+5. Push your code to Github.
 
-### Step 2: Production version test
+<aside class="negative">
+You <b>must</b> have at least one commit to be able to push!
+</aside>
 
-Create a built, mimified version of your page with your .
+
+## Test Production Version
+
+The first time or to debug something without sending multiple commits to gihub you should first try to build your project at least once locally.
+
+### Create a built, mimified version of your page with:
 ```sh
 npm run build
 ```
-*Notice that you have a dist folder with this new content.*
+*Notice that you have a new `dist/` folder with this new content.*
 
-Test production version with:
+### Test production version with this command:
 ```sh
 npm run preview
 ```
+This will start a webserver serving the files in the dist folder.
 
 
+## Deploy static site on Github
 
-### Step 3: Deploy static site on Github
-
-Github offers to serve static web pages https://pages.github.com/
+Github offers to serve static web pages [https://pages.github.com/](https://pages.github.com/)
 
 There are two options:
 
@@ -112,25 +121,34 @@ There are two options:
 - Projet site: http://usernameABC.github.io/repositoryYXZ by creating a special branch gh-pages inside the repositoryXYZ
 
 
-Note:
-
+<aside class="positive">
 A special CNAME file can be put at the root of gh-pages to use a custom domain name.
+</aside>
 
 
-
-## Setup Github and gh-pages via Github Actions
+### Setup Github and gh-pages via Github Actions
 
 - configure github Actions to build and deploy to gh-pages
-- configure vue to support /labo-xyz/ in production
+- configure vue to support /subfolder-repository-name/ in production
 - commit and push
 
 
 
-### Github Action Config
+## Github Action Config
 
-- create folder `.github\workflows`
-- add this file `build_deploy.yml`
+### Create folder `.github\workflows`
+```txt
+Project
+ |
+ |-- .github
+        |
+        |-- workflows
+               |
+               |-- build_deploy.yml
 
+```
+
+### Add this file `build_deploy.yml`
 ```yml
 name: Build and Deploy to GH-Pages
 
@@ -173,8 +191,9 @@ jobs:
 
 
 
-### Configure Vite publicPath
-Edit `vite.config.js` file to handle subfolder deployment.
+## Configure Vite publicPath
+
+### Edit `vite.config.js` file to handle subfolder deployment.
 ```sh
 export default defineConfig({
   ...,
@@ -182,9 +201,12 @@ export default defineConfig({
 });
 ```
 
+<aside class="negative">
+Make sure to adapt the code to <b>your</b> configuration.
+</aside>
 
 
-### Try to deploy
+## Try to deploy
 
 After a successful ```npm run build``` commit all changes and push:
 ```sh
@@ -195,11 +217,10 @@ git push
 
 The site can be accessed at: https://heg-web.github.io/labo-test/ when action workflow is finished.
 
-<!-- .element: class="small" -->
 
 
 
-### You did it!
+## You did it!
 
 Your First Single Page Web Application is deployed in Production!
 

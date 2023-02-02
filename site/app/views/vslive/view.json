@@ -6,5 +6,6 @@
   "exclude": [
     ".*-about$",
     "^lang-.*"
-  ]
+  ],
+  "hidden": true
 }
