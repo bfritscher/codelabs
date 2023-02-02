@@ -3,7 +3,7 @@ summary: Create a CodeLab Using Markdown
 id: codelab-4-codelab-markdown
 categories: codelab,markdown
 environments: Web
-status: draft
+status: Hidden
 feedback link: https://github.com/Mrc0113/codelab-4-codelab
 
 # CodeLab to Create a CodeLab
