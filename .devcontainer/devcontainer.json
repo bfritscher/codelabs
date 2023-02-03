@@ -7,7 +7,7 @@
     // Update 'VARIANT' to pick a Node version: 10, 12, 14
     //"args": { "VARIANT": "14" }
   },
-  "forwardPorts": [8000],
+  "forwardPorts": [8000, 8091, 9091],
   "customizations": {
     // Configure properties specific to VS Code.
     "vscode": {

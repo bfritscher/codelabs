@@ -1,7 +1,7 @@
 summary: Vue.js Exercises
 id: vue-exercises
-categories: Web
-tags: vuejs
+categories: vuejs
+tags: vuejs, pweb
 status: Published
 authors: Boris Fritscher
 feedback link: https://github.com/bfritscher/cours-pweb-slides

@@ -1,7 +1,7 @@
 summary: Deploying a Vue.js Project on GitHub
 id: vue-github-deploy
-categories: Web
-tags: vuejs
+categories: vuejs
+tags: vuejs, pweb, interschool
 status: Published
 authors: Boris Fritscher
 feedback link: https://github.com/bfritscher/cours-pweb-slides

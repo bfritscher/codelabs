@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-03T23:15:37Z",
+  "id": "vue-dev-setup",
+  "duration": 0,
+  "title": "Getting Started with Vue.js Project Setup",
+  "authors": "Boris Fritscher",
+  "summary": "Getting Started with Vue.js Project Setup",
+  "source": "",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vuejs"
+  ],
+  "tags": [
+    "interschool",
+    "pweb",
+    "vuejs"
+  ],
+  "feedback": "https://github.com/bfritscher/cours-pweb-slides",
+  "url": "vue-dev-setup"
+}

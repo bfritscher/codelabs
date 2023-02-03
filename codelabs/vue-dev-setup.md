@@ -1,7 +1,7 @@
 summary: Getting Started with Vue.js Project Setup
 id: vue-dev-setup
-categories: Web
-tags: vuejs
+categories: vuejs
+tags: vuejs, pweb, interschool
 status: Published
 authors: Boris Fritscher
 feedback link: https://github.com/bfritscher/cours-pweb-slides

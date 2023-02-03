@@ -1,0 +1,241 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Deploying a Vue.js Project on GitHub Pages</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="vue-github-deploy"
+                  title="Deploying a Vue.js Project on GitHub Pages"
+                  environment="web"
+                  feedback-link="https://github.com/bfritscher/cours-pweb-slides">
+    
+      <google-codelab-step label="Getting Started" duration="0">
+        <p>We want to use the static hosting services offered by <a href="https://github.com" target="_blank">github.com</a>. In addition, we will also use their server-side actions to build the project before deploying it automatically on each commit.</p>
+<ol type="1">
+<li>Create a <a href="https://github.com" target="_blank">github.com</a> account.</li>
+<li>Install <a href="https://git-scm.com/download/" target="_blank">git-scm</a> to have a version of <code>git</code>.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Use LF also on windows" duration="0">
+        <p>We want to work with LF line endings instead of CRLF.</p>
+<p>Create <code>.gitattributes</code> at the root of your project with the following content:</p>
+<pre><code language="language-txt" class="language-txt"># Force all line endings to be \n
+* text eol=lf
+
+############################################################
+# git can corrupt binary files if they&#39;re not set to binary.
+############################################################
+
+# Apple office documents are actually folders, so treat them as binary.
+*.numbers binary
+*.pages binary
+*.keynote binary
+
+# Image files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+
+# Movie and audio files
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.flv binary
+*.ogg binary
+
+# Compression formats
+*.gz binary
+*.bz2 binary
+*.7z binary
+*.zip binary
+
+# Web fonts
+*.ttf binary
+*.eot binary
+*.woff binary
+*.otf binary
+
+# Other
+*.fla binary
+*.swf binary
+*.pdf binary
+
+############################################################
+# End binary settings
+############################################################
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Git Repositry" duration="0">
+        <p>Use git to create a local repostiory and connect it to a github online repository.</p>
+<aside class="special"><p> Looking for more? Checkout <a href="https://bfritscher.github.io/cours-git-slides/#/" target="_blank">GIT Workshop</a><a target="_blank"> or </a><a href="https://git-scm.com/doc" target="_blank">git documentation</a></p>
+</aside>
+<ol type="1">
+<li>Create a github repository</li>
+<li>Init a local git repository</li>
+<li>Add and Commit your code</li>
+<li>Add the github remote</li>
+<li>Push your code to Github.</li>
+</ol>
+<aside class="warning"><p> You <strong>must</strong> have at least one commit to be able to push! </p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Test Production Version" duration="0">
+        <p>The first time or to debug something without sending multiple commits to gihub you should first try to build your project at least once locally.</p>
+<h2 is-upgraded>Create a built, mimified version of your page with:</h2>
+<pre><code language="language-sh" class="language-sh">npm run build
+</code></pre>
+<p><em>Notice that you have a new </em></p>
+<p><em><code>dist/</code></em></p>
+<p><em> folder with this new content.</em></p>
+<h2 is-upgraded>Test production version with this command:</h2>
+<pre><code language="language-sh" class="language-sh">npm run preview
+</code></pre>
+<p>This will start a webserver serving the files in the dist folder.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Deploy static site on Github" duration="0">
+        <p>Github offers to serve static web pages <a href="https://pages.github.com/" target="_blank">https://pages.github.com/</a></p>
+<p>There are two options:</p>
+<ul>
+<li>User site: http://usernameABC.github.io by creating a special repository with the name: usernameABC.github.io</li>
+<li>Projet site: http://usernameABC.github.io/repositoryYXZ by creating a special branch gh-pages inside the repositoryXYZ</li>
+</ul>
+<aside class="special"><p> A special CNAME file can be put at the root of gh-pages to use a custom domain name. </p>
+</aside>
+<h2 is-upgraded>Setup Github and gh-pages via Github Actions</h2>
+<ul>
+<li>configure github Actions to build and deploy to gh-pages</li>
+<li>configure vue to support /subfolder-repository-name/ in production</li>
+<li>commit and push</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Github Action Config" duration="0">
+        <h2 is-upgraded>Create folder <code>.github\workflows</code></h2>
+<pre><code language="language-txt" class="language-txt">Project
+ |
+ |-- .github
+        |
+        |-- workflows
+               |
+               |-- build_deploy.yml
+
+</code></pre>
+<h2 is-upgraded>Add this file <code>build_deploy.yml</code></h2>
+<pre><code language="language-yml" class="language-yml">name: Build and Deploy to GH-Pages
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: &#39;16&#39;
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: $&#123;&#123; runner.os }}-node-$&#123;&#123; hashFiles(&#39;**/package-lock.json&#39;) }}
+          restore-keys: |
+            $&#123;&#123; runner.os }}-node-
+      - run: npm ci
+      #- run: npm test
+      - run: npm run build
+
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: $&#123;&#123; secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configure Vite publicPath" duration="0">
+        <h2 is-upgraded>Edit <code>vite.config.js</code> file to handle subfolder deployment.</h2>
+<pre><code language="language-sh" class="language-sh">export default defineConfig({
+  ...,
+  base: process.env.NODE_ENV === &#34;production&#34; ? &#34;/labo-test/&#34; : &#34;/&#34;,
+});
+</code></pre>
+<aside class="warning"><p> Make sure to adapt the code to <strong>your</strong> configuration. </p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Try to deploy" duration="0">
+        <p>After a successful <code>npm run build</code> commit all changes and push:</p>
+<pre><code language="language-sh" class="language-sh">git add . --all
+git commit
+git push
+</code></pre>
+<p>The site can be accessed at: https://heg-web.github.io/labo-test/ when action workflow is finished.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="You did it!" duration="0">
+        <p>Your First Single Page Web Application is deployed in Production!</p>
+<p class="image-container"><img src="img/a25f7fc02ad6a18d.gif"></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

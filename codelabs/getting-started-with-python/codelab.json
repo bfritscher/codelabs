@@ -1,0 +1,24 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-03T23:39:16Z",
+  "id": "getting-started-with-python",
+  "duration": 0,
+  "title": "Getting Started with Python",
+  "authors": "Boris Fritscher",
+  "summary": "In this codelab, you'll install python with a virtual environment and implement some functions to get familiar with python's data structures and syntaxe.",
+  "source": "1imqbI5ARA6eXm7psxA8HPf5mXQhWIqFGbsYgLs9vuOo",
+  "theme": "python",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "python"
+  ],
+  "tags": [
+    "cloud"
+  ],
+  "url": "getting-started-with-python"
+}

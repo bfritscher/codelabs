@@ -1,0 +1,232 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Getting Started with Vue.js Project Setup</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="vue-dev-setup"
+                  title="Getting Started with Vue.js Project Setup"
+                  environment="web"
+                  feedback-link="https://github.com/bfritscher/cours-pweb-slides">
+    
+      <google-codelab-step label="Getting Started" duration="0">
+        <p>In this lab we will setup a new local Vue.js project with the Vite build tool.</p>
+<aside class="warning"><p> Older version of Vue used Vue CLI, but this is no longer recommended. </p>
+</aside>
+<aside class="special"><p> Looking for more? More details in the official <a href="https://vuejs.org/guide/quick-start.html" target="_blank">Vue.js Guide</a></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install Development Environment Prerequisites" duration="0">
+        <p>Download and install <a href="https://nodejs.org/" target="_blank">Node.js</a> to get <code>npm</code>.</p>
+<p>Download and install <a href="https://git-scm.com/download/win" target="_blank">Git</a> to get <code>git</code>.</p>
+<p>Download and install <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> to get <code>code</code>.</p>
+<p>Check that it works from the shell:</p>
+<pre><code language="language-sh" class="language-sh">$ git --version
+git version X.Y.Z
+
+$ node --version
+vX.Y.Z
+
+$ code --version
+X.Y.Z
+...
+x64
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create a new project" duration="0">
+        <p>First change to a parent folder in which the project folder will be created.</p>
+<p>Use vue/vite to create a new project.</p>
+<pre><code language="language-sh" class="language-sh">C:\temp&gt; npm init vue@latest
+</code></pre>
+<h2 is-upgraded>Select your preferred options</h2>
+<p class="image-container"><img src="img/3169bab02019d426.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install Extensions for VS Code" duration="0">
+        <p>Change into the directory and launch vscode</p>
+<pre><code language="language-sh" class="language-sh">$ cd labo-vue
+$ code .
+</code></pre>
+<h2 is-upgraded>Install recommended extensions</h2>
+<h3 is-upgraded>VS Code</h3>
+<ul>
+<li><a href="vscode:extension/Vue.volar" target="_blank">vscode Vue Volar extension</a></li>
+<li><a href="vscode:extension/esbenp.prettier-vscode" target="_blank">vscode Prettier extension</a></li>
+<li><a href="vscode:extension/dbaeumer.vscode-eslint" target="_blank">vscode eslint extension</a></li>
+</ul>
+<h3 is-upgraded>Chrome</h3>
+<ul>
+<li><a href="https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd" target="_blank">vue chrome devtool extension</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install Project Dependencies" duration="0">
+        <aside class="warning"><p> Must be done inside the project&#39;s root folder! </p>
+</aside>
+<pre><code language="language-sh" class="language-sh">$ npm install
+</code></pre>
+<p>This will read <code>package.json</code> and update <code>node_modules</code> folder.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Preview Your App in The Browser" duration="0">
+        <p>Start the development server</p>
+<pre><code language="language-sh" class="language-sh">npm run dev
+</code></pre>
+<aside class="special"><p> Edit a file and watch livereload in action. </p>
+</aside>
+<p>For example in <code>./index.html</code> add:</p>
+<pre><code>&lt;h1&gt;Test vue!&lt;/h1&gt;
+&lt;!-- inside &lt;body&gt; --&gt;
+</code></pre>
+<aside class="special"><p> Stop the server with <em>ctrl+c</em></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Cleanup" duration="0">
+        <p>We want to simplify the starting project for now</p>
+<ul>
+<li>Delete <code>src/assets/base.css</code></li>
+<li>Empty  <code>src/assets/main.css</code></li>
+<li>Replace <code>src/App.vue</code> with this code:</li>
+</ul>
+<pre><code language="language-html" class="language-html">&lt;template&gt;
+  &lt;div class=&#34;container&#34;&gt;
+    &lt;h1&gt;Hello Bootstrap&lt;/h1&gt;
+    &lt;div class=&#34;row&#34;&gt;
+      &lt;div class=&#34;col-sm&#34;&gt;
+        &lt;button class=&#34;btn btn-primary&#34;&gt;&#123;&#123; message }}&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&#34;col-sm&#34;&gt;
+        &lt;i class=&#34;fas fa-ice-cream display-1 text-primary&#34;&gt;&lt;/i&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      message: &#34;Hello Vue!&#34;,
+    };
+  },
+};
+&lt;/script&gt;
+
+&lt;style&gt;&lt;/style&gt;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Add Bootstrap and Font Awesome" duration="0">
+        <p>Bootstrap is a CSS Gird and Component library.</p>
+<p>Font Awesome provides a large number of free icons.</p>
+<p>Check <code>package.json</code> (before and after)</p>
+<ol type="1">
+<li>Add dependencies</li>
+</ol>
+<pre><code language="language-sh" class="language-sh">$ npm install --save bootstrap @popperjs/core
+$ npm install --save @fortawesome/fontawesome-free
+</code></pre>
+<aside class="special"><p> Save is important because it will add an entry to the package.json. This allows to reinstall all the project&#39;s required dependencies with npm install. </p>
+</aside>
+<ol type="1" start="2">
+<li>Inside <code>src/main.js</code> add imports</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">import &#34;bootstrap&#34;;
+import &#34;bootstrap/dist/css/bootstrap.min.css&#34;;
+import &#34;@fortawesome/fontawesome-free/css/all.min.css&#34;;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Try More Font Awesome" duration="0">
+        <p>Check that the icon works:</p>
+<p class="image-container"><img style="width: 48.00px" src="img/5889a574c5778ebc.svg"></p>
+<h2 is-upgraded>Add another icon to the <code>App.vue</code></h2>
+<pre><code language="language-html" class="language-html">&lt;i class=&#34;fa-solid fa-cake-candles&#34;&gt;&lt;/i&gt;
+</code></pre>
+<aside class="special"><p> Looking for more? More icons on <a href="https://fontawesome.com/icons" target="_blank">https://fontawesome.com/icons</a></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Use npm to install other packages" duration="0">
+        <p>Lets try another bootstrap look.</p>
+<pre><code language="language-sh" class="language-sh">npm install bootswatch --save
+</code></pre>
+<aside class="special"><p> Looking for more? More themes on <a href="https://bootswatch.com/" target="_blank">https://bootswatch.com/</a></p>
+</aside>
+<h2 is-upgraded>Try different CSS files from bootswatch in <code>main.js</code></h2>
+<pre><code language="language-javascript" class="language-javascript">import &#34;bootswatch/dist/darkly/bootstrap.min.css&#34;;
+</code></pre>
+<aside class="special"><p> Did you notice the live-reload of the local server? </p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Test linting" duration="0">
+        <p>We installed two linter to help use follow best practice in code formatting and quality:</p>
+<ul>
+<li>Prettier for code formatting</li>
+<li>ESLint for code quality</li>
+</ul>
+<p>Run the command and check how the files are changed.</p>
+<pre><code language="language-sh" class="language-sh">$ npm run lint
+</code></pre>
+<p>Copy this line into <code>main.js</code> and see what happens.</p>
+<pre><code language="language-js" class="language-js">let myvar = &#39;Hello World&#39;
+</code></pre>
+<aside class="special"><p> What are all the errors?<br> Check the PROBLEMS tab of vscode (right-click to fix problem). </p>
+</aside>
+<h2 is-upgraded>You now have a fully working project and know how to install dependencies and how to write clean code.</h2>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Getting Started with Python</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="getting-started-with-python"
+                  title="Getting Started with Python"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Setup" duration="0">
+        <p><strong>Last Updated:</strong> 2023-02-03</p>
+<p>In this codelab, you&#39;ll install python with a virtual environment and implement some functions to get familiar with python&#39;s data structures and syntaxe.</p>
+<h2 is-upgraded><strong>Download and Install Python</strong></h2>
+<p>From the official website:</p>
+<p><a href="https://www.python.org/downloads/" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download Python</paper-button></a> </p>
+<p>Install it and check  <strong>Add python.exe to PATH</strong></p>
+<p class="image-container"><img style="width: 624.00px" src="img/96ac50bcb425dcc9.png"></p>
+<h2 is-upgraded><strong>Verify your installation</strong></h2>
+<p>In a new terminal session do:</p>
+<pre>$ python --version
+Python 3.x.y</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create a Virtual Environment" duration="0">
+        <p><em>Adapted from: </em><a href="https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/" target="_blank"><em>https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/</em></a></p>
+<p>First make a project folder, and create a virtual environment inside it. To do so, open the terminal app, write the following command, and hit return.</p>
+<pre>$ mkdir myproject</pre>
+<p>Now, use the <code>venv</code> command to create a virtual environment inside the project folder, as follows:</p>
+<pre>$ python -m venv myproject/env</pre>
+<p>Check all the files created in the new folder <code>myproject/env</code></p>
+<aside class="special"><p><strong>Note:</strong> There are two tools for setting up virtual environments, <code>virtualenv</code> and <code>venv</code>, that we can use almost interchangeably. <code>virtualenv</code> supports older Python versions and needs to be installed using the pip command. In contrast, <code>venv</code> is only used with Python 3.3 or higher and is included in the Python standard library, requiring no installation.</p>
+</aside>
+<h2 is-upgraded><strong>Activating a Python Virtual Environment</strong></h2>
+<p>To activate the virtual environment, we created in the previous step, run the following command.</p>
+<pre>$ myproject\env\Scripts\Activate.ps1 -Prompt &#34;MyCustomEnvName&#34;
+(MyCustomEnvName) PS C:\...\myproject&gt;</pre>
+<aside class="warning"><p><strong>Note:</strong> On Windows, it may be required to enable this Activate.ps1 script by setting the</p>
+<p>execution policy for the user. You can do this by issuing the following PowerShell</p>
+<p>command:</p>
+<p><code>PS C:\> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code></p>
+<p>For more information on Execution Policies: </p>
+<p><a href="https://go.microsoft.com/fwlink/?LinkID=135170" target="_blank">https://go.microsoft.com/fwlink/?LinkID=135170</a></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Installing Packages" duration="0">
+        <p><em>Adapted from: </em><a href="https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/" target="_blank"><em>https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/</em></a></p>
+<p>We are now inside an isolated virtual environment where only <code>pip</code> and <code>setup tools</code> are installed by default. Let&#39;s check the pre-installed packages on the virtual environment by running the <code>pip list</code> command.</p>
+<pre>(MyCustomEnvName) PS C:\tmp&gt; pip list
+Package    Version
+---------- -------
+pip        22.3.1
+setuptools 65.5.0</pre>
+<p>Before we want to use <code>pip</code> to install any packages, let&#39;s upgrade it to the latest version. Since we&#39;re working inside the virtual environment, the following command only upgrades the <code>pip</code> tool inside this environment, not in the other virtual environments or system-wide.</p>
+<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install --upgrade pip</pre>
+<p>Let&#39;s rerun the <code>pip list</code> command to see the changes</p>
+<p>Now, let&#39;s install the pandas package into the environments. Before installing the package, you need to decide which version to install. If you&#39;re going to install the latest version, you can simply use the following command:</p>
+<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install pandas</pre>
+<p>But if you want to install a specific version of the package, you need to use this command:</p>
+<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install pandas==1.1.1</pre>
+<p>Now, let&#39;s see how we can tell pip that we are going to install any version of pandas before version 1.2.</p>
+<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install &#39;pandas&lt;1.2&#39;</pre>
+<p>Also, we can ask pip to install the pandas package after version 0.25.3 as follows:</p>
+<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install &#39;pandas&gt;0.25.3&#39;</pre>
+<aside class="special"><p><strong>Note:</strong> In the previous commands, we put the package specification between quotes, as greater than &gt; and less than &lt; signs have special meaning on the command-line shell. Both commands will install the latest version of the pandas package that matches the given constraints. However, the best practice is to specify packages with an exact version number.</p>
+</aside>
+<p>Let&#39;s review the list of installed packages in the environment.</p>
+<pre>(MyCustomEnvName) PS &gt; pip list
+Package    Version
+--------------- --------
+numpy           1.24.1
+pandas          1.5.3
+pip             23.0
+python-dateutil 2.8.2
+pytz            2022.7.1
+setuptools      65.5.0
+six             1.16.0</pre>
+<p>While installing pandas, NumPy and three other packages are automatically installed as prerequisites for the pandas package.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Reproducing a Python Virtual Environment" duration="0">
+        <p><em>Adapted from: </em><a href="https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/" target="_blank"><em>https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/</em></a></p>
+<p>It&#39;s common to reproduce a virtual environment. Assume your colleague is going to work on the same project that you have been working on for weeks. She needs to install exactly the same packages with the correct versions in a virtual environment on her system. To create identical environments, you first need to list all the dependencies installed in the project&#39;s virtual environment by using the <code>pip freeze</code> command.</p>
+<pre>(MyCustomEnvName) PS C:\tmp&gt; pip list
+numpy==1.24.1
+pandas==1.5.3
+python-dateutil==2.8.2
+pytz==2022.7.1
+six==1.16.0</pre>
+<p>The output of <code>pip freeze</code> is quite similar to <code>pip list</code>, but it returns the list of packages installed on an environment in a correct format to reproduce the environment with the exact package versions the project requires. The next step is exporting the package list into the <code>requirements.txt</code> file. To do so, run this command:</p>
+<pre>(MyCustomEnvName) PS C:\tmp&gt; pip freeze &gt; requirements.txt</pre>
+<p>The command above creates a text file named requirements.txt in the current folder. The requirements.txt file contains all the packages and their exact versions. </p>
+<aside class="special"><p><strong>Task:</strong> Create a new project and venv, activate it and install all packages with</p>
+<p><code>pip install -r requirements.txt</code></p>
+</aside>
+<aside class="warning"><p><strong>Important:</strong> A Python project folder contains source code that runs in a virtual environment. On the other hand, a virtual environment is a folder that contains the Python interpreter, packages, and tools like <code>pip</code>. So, the best practice is to keep them separate and never put your project files in a virtual environment folder.</p>
+</aside>
+<aside class="special"><p><strong>Note:</strong> What more? Check out this extended <a href="https://realpython.com/python-virtual-environments-a-primer/" target="_blank">article</a>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Assignment Alog Python" duration="0">
+        <aside class="warning"><p><strong>Note:</strong> you must already have <strong>git</strong> and <strong>VS code</strong> installed and have a <strong>GitHub Account</strong></p>
+</aside>
+<p>Start by</p>
+<p><a href="https://classroom.github.com/a/V76kQfwu" target="_blank"><paper-button class="colored" raised>Accepting the assignment</paper-button></a></p>
+<p>Next steps:</p>
+<ol type="1" start="1">
+<li><code>git clone</code> the newly created repository.</li>
+<li>Create a new virtual environment inside your project folder. (Do not forget to add it to <code>.gitignore</code>)</li>
+<li>Install the required dependencies with the help of the <code>requirements.txt</code> file.</li>
+<li>Solve the assignment by passing the tests.</li>
+</ol>
+<aside class="special"><p><strong>Hint:</strong></p>
+<p>Add an extension to vscode to help with python support</p>
+<p>Don&#39;t forget to commit each implemented function and push to GitHub</p>
+<p>Check everyone&#39;s progress on the <a href="https://pweb.bf0.ch/#algopy" target="_blank">scoreboard</a></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

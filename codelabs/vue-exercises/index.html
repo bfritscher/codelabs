@@ -1,0 +1,140 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Vue.js Exercises</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="vue-exercises"
+                  title="Vue.js Exercises"
+                  environment="web"
+                  feedback-link="https://github.com/bfritscher/cours-pweb-slides">
+    
+      <google-codelab-step label="Getting Started" duration="0">
+        <p>This is a collection of exercises to apply Vue.js concepts in practice. We assume that you already have a project setup and know the basic concepts of Vue.js.</p>
+<p>The main concepts are mentioned in the title of the exercise. Most of the exercise built on top of the previous ones.</p>
+<aside class="special"><p> Looking for more? In any case the official <a href="https://vuejs.org/guide/introduction.html" target="_blank">Vue.js Documentation</a> is a great source for more information.<br> Be sure to select the right mode of API Preference which fits your project (Options or Composition). </p>
+</aside>
+<h2 is-upgraded>Have Fun!</h2>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="v-model, v-if, v-for" duration="0">
+        <p>Edit <code>App.vue</code> to create the following page :</p>
+<p class="image-container"><img src="img/f678d590788f98e4.jpg"></p>
+<ul>
+<li>Clicking on <strong>Add</strong>, adds the amount in the input to a list below.</li>
+<li>If the amount is not greater than 0 an error message must be indicated, otherwise the message is hidden.</li>
+<li>You can delete an item from the list with the &#34;X&#34; button</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Computed and Methods" duration="0">
+        <p>Edit <code>App.vue</code> to create the following page:</p>
+<p class="image-container"><img src="img/dbed0b6a48c120dd.jpg"></p>
+<ul>
+<li>Recent or Top filters the list according to last added or descending value.</li>
+<li>The display of the amounts is transformed to always show 2 digits after the decimal point and CHF.</li>
+<li>Add a level image: <ul>
+<li>level 1 up to 10</li>
+<li>level 2 up to 20</li>
+<li>level 3 after that</li>
+</ul>
+</li>
+</ul>
+<p>You can use this link in a JavaScript template string: <code>https://gistcdn.githack.com/bfritscher/6ff8e74b80d44616944843fe83cc5d19/raw/2d4e25748fbbe681681932444a7ef339c90d4dde/chevron_${level}.svg</code></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Components, import / export" duration="0">
+        <p>Refactor the application into components based on the following breakdown:</p>
+<p class="image-container"><img src="img/21f2ea0ee4a68fca.jpg"></p>
+<ul>
+<li>Create a reusable function <code>toChf()</code> that returns a number formatted in chf.</li>
+<li>Add, transform the code, so that the application still works the same way.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Transitions (optional)" duration="0">
+        <p>Add transition effects to the message and list:</p>
+<p class="image-container"><img src="img/5c63a6f8db8d546a.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="localStorage and JSON" duration="0">
+        <p>Persist data locally</p>
+<ul>
+<li>Save the list in the browser&#39;s localstorage each time you add or remove an item.</li>
+<li>When the page loads, if there is a list saved in the localstorage, then retrieve it.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="vue-router" duration="0">
+        <aside class="special"><p> In order for the router to work in production on github you must use a hash based router. </p>
+</aside>
+<p>Replace <code>createWebHistory</code> with <code>createWebHashHistory</code> in <code>src/router/index.js</code></p>
+<h2 is-upgraded>Add two more pages to create the following app:</h2>
+<p class="image-container"><img src="img/ceaa9ce8463b572a.png"></p>
+<ul>
+<li>A search page without parameters</li>
+<li>On the search page dynamcially populate the <code>to</code> attribute of a <code>router-link</code> based on a text input field.</li>
+<li>A Profile page with an url parameter, which displays this parameter on the page.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="axios or fetch" duration="0">
+        <p>Use <a href="https://developers.thecatapi.com/view-account/ylX4blBYT9FaoVd6OhvR?report=bOoHBz-8t" target="_blank">thecatapi</a> to fetch cats</p>
+<p>For example: <code>"https://api.thecatapi.com/v1/images/search"</code></p>
+<ul>
+<li>Start simple getting some cats</li>
+<li>Then get more by clicking on a button.</li>
+</ul>
+<h2 is-upgraded>Getting further (optional)</h2>
+<ul>
+<li>Entering text in the search box displays a list of breeds.</li>
+<li>Clicking on an item in the list takes you to a detail page.</li>
+<li>The detail page uses the Breed id code retrieved as a URL parameter to search for 6 photos of that breed.</li>
+</ul>
+<p class="image-container"><img src="img/7843551d43416c12.png"></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

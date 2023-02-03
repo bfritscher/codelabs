@@ -52,9 +52,9 @@ jobs:
         working-directory: ./site/
         run: npm ci
 
-      - name: Generate codelabs
-        working-directory: ./codelabs/
-        run: $HOME/go/bin/claat export *.md
+      # - name: Generate codelabs
+      #   working-directory: ./codelabs/
+      #   run: $HOME/go/bin/claat export *.md
 
       - name: Build
         working-directory: ./site/

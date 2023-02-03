@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-03T23:15:43Z",
+  "id": "vue-github-deploy",
+  "duration": 0,
+  "title": "Deploying a Vue.js Project on GitHub Pages",
+  "authors": "Boris Fritscher",
+  "summary": "Deploying a Vue.js Project on GitHub",
+  "source": "",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vuejs"
+  ],
+  "tags": [
+    "interschool",
+    "pweb",
+    "vuejs"
+  ],
+  "feedback": "https://github.com/bfritscher/cours-pweb-slides",
+  "url": "vue-github-deploy"
+}

@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-03T22:18:01Z",
+  "id": "vue-exercises",
+  "duration": 0,
+  "title": "Vue.js Exercises",
+  "authors": "Boris Fritscher",
+  "summary": "Vue.js Exercises",
+  "source": "",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vuejs"
+  ],
+  "tags": [
+    "pweb",
+    "vuejs"
+  ],
+  "feedback": "https://github.com/bfritscher/cours-pweb-slides",
+  "url": "vue-exercises"
+}
