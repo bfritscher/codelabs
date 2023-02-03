@@ -99,7 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div id="mainToolbar" class="paper-header">
       <div class="site-width layout horizontal">
         <a href="/">
-          <img src="/images/logo.png" class="logo-devs" alt="Codelabs Logo">
+          <img src="/images/heg-arc-logo.jpg" class="logo-devs" alt="he-arc Logo">
         </a>
         <div id="searchbar">
           <paper-input-container no-label-float>
@@ -108,6 +108,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <input is="iron-input" bind-value="{{searchVal}}" on-keydown="onSearchKeyDown">
           </paper-input-container>
         </div>
+        <img src="/images/logo_hesso_dark.svg" class="logo-devs" alt="hes-so Logo">
       </div>
     </div>
     {% endraw %}
@@ -115,28 +116,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     {# Event pages force down attribute. On homepage, it's applied dynamically. #}
     <header id="banner" {% if view.id != 'default' -%}down{%- else %}down$="[[_toBoolean(selectedFilter)]]"{%- endif %}>
       <div class="site-width">
-        {% if view.id == 'default' %}
-        <h2 class="banner-title">Welcome to Codelabs!</h2>
-        <div class="banner-description"
-             data-filter-selected$="{% raw %}[[_toBoolean(selectedFilter)]]{% endraw %}">
-          <p class="banner-info">
-            Codelabs provide a guided, tutorial, hands-on
-            coding experience. Most codelabs will step you through the process
-            of building a small application, or adding a new feature to an
-            existing application.
-            <br>
-            <a href="https://github.com/googlecodelabs/tools">Codelab tools on GitHub</a>
-          </p>
-        {%- else -%}
           <div class="banner-description">
+            {% if view.logoUrl -%}
             <img id="logo" src="{{view.logoUrl}}" alt="Event logo">
+            {%- endif %}
             <div class="banner-meta">
               <h3>{{view.title}}</h3>
               {% if view.description -%}
                 <p>{{view.description}}</p>
               {%- endif %}
             </div>
-        {%- endif %}
           </div>
       </div>
     </header>
@@ -149,11 +138,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-tab>Recent</paper-tab>
             <paper-tab>Duration</paper-tab>
           </paper-tabs>
-        </div>
+        </div> 
 
         {% if view.id == 'default' && views|length > 1 %}
         <paper-dropdown-menu
-          label="Choose an event"
+          label="Choose a class"
           class="dropdown-filter"
           no-label-float
           noink no-animations
@@ -234,45 +223,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         Loading Codelabs, please wait...
       </div>
     </main>
-
-    <footer id="footer">
-      <div class="footer-wrapper site-width">
-        <div class="link-list">
-          <label>Connect</label>
-          <ul>
-            <li><a href="https://www.example.com/">Example</a></li>
-          </ul>
-        </div>
-        <div class="link-list">
-          <label>Programs</label>
-          <ul>
-            <li><a href="https://www.example.com/">Example</a></li>
-          </ul>
-        </div>
-        <div class="link-list">
-          <label>Developer Consoles</label>
-          <ul>
-            <li><a href="https://www.example.com/">Example</a></li>
-          </ul>
-        </div>
-        <div class="link-list">
-          <label>Explore</label>
-           <ul>
-            <li><a href="https://www.example.com/">Example</a></li>
-          </ul>
-        </div>
-      </div>
-    </footer>
-
-    <div class="footerbar">
-      <div class="site-width layout horizontal center justified">
-        <span>
-          <a href="https://example.com">Terms</a>
-          &nbsp; | &nbsp;
-          <a href="https://example.com">Privacy</a>
-        </span>
-      </div>
-    </div>
 
   </paper-header-panel>
 

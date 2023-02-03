@@ -1,0 +1,10 @@
+{
+  "title": "64-31.1 Projet de technologie web",
+  "description": "https://bfritscher.github.io/cours-pweb-slides/",
+  "logoUrl": "",
+  "tags": ["pweb"],
+  "exclude": [
+    ".*-about$",
+    "^lang-.*"
+  ]
+}

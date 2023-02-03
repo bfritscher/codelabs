@@ -297,7 +297,7 @@ gulp.task('dist', gulp.series(
 
 // watch:css watches css files for changes and re-builds them
 gulp.task('watch:css', () => {
-  gulp.watch('app/**/*.scss', gulp.series('build:css'));
+  gulp.watch('app/**/*.scss',  {interval: 1000, usePolling: true}, gulp.series('build'));
 });
 
 // watch:html watches html files for changes and re-builds them
@@ -308,12 +308,12 @@ gulp.task('watch:html', () => {
     'app/*.txt',
     'app/*.xml',
   ]
-  gulp.watch(srcs, gulp.series('build:html'));
+  gulp.watch(srcs, {interval: 1000, usePolling: true}, gulp.series('build'));
 });
 
 // watch:css watches image files for changes and updates them
 gulp.task('watch:images', () => {
-  gulp.watch('app/images/**/*', gulp.series('build:images'));
+  gulp.watch('app/images/**/*', {interval: 1000, usePolling: true}, gulp.series('build'));
 });
 
 // watch:images watches js files for changes and re-builds them
@@ -323,7 +323,7 @@ gulp.task('watch:js', () => {
     '!app/js/bundle/**/*',
     'app/scripts/**/*',
   ]
-  gulp.watch(srcs, gulp.series('build:js', 'build:html'));
+  gulp.watch(srcs, {interval: 1000, usePolling: true}, gulp.series('build:js', 'build'));
 });
 
 // watch starts all watchers

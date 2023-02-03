@@ -23,6 +23,10 @@
   outline: none;
 }
 
+#mainPanel > #dropShadow {
+  display: none;
+}
+
 body {
   background: $backgroundColor;
 

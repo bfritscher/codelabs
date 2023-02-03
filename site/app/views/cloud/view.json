@@ -1,0 +1,10 @@
+{
+  "title": "63-41.2 Virtualisation et conteneur logiciels",
+  "description": "",
+  "logoUrl": "",
+  "tags": ["cloud"],
+  "exclude": [
+    ".*-about$",
+    "^lang-.*"
+  ]
+}
