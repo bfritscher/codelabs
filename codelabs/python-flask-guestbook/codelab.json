@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-06T18:50:30Z",
+  "id": "python-flask-guestbook",
+  "duration": 18,
+  "title": "Python Flask Guestbook",
+  "authors": "Wu-chang Feng, Boris Fritscher",
+  "summary": "Run a simple web application using Python and Flask",
+  "source": "1FGdawnO3q3_S2j9XzXiHx_amaPc1MoFbLuAXzpuy8og",
+  "theme": "python",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "python",
+    "guestbook"
+  ],
+  "tags": [
+    "cloud"
+  ],
+  "feedback": "https://docs.google.com/document/d/1FGdawnO3q3_S2j9XzXiHx_amaPc1MoFbLuAXzpuy8og",
+  "url": "python-flask-guestbook"
+}

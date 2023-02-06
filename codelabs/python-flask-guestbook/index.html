@@ -1,0 +1,215 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Python Flask Guestbook</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="python-flask-guestbook"
+                  title="Python Flask Guestbook"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/1FGdawnO3q3_S2j9XzXiHx_amaPc1MoFbLuAXzpuy8og">
+    
+      <google-codelab-step label="Python Flask Guestbook" duration="2">
+        <p class="image-container"><img style="width: 567.00px" src="img/c112fc76dfe73696.png"></p>
+<p>We will be using a simple guestbook application to show you a range of computing and database systems and how they operate.  The application adopts a model-view-controller (MVC) architecture initially in order to allow us to separate the data backend being used (model) from the HTML user interface (view), and the application logic (controller).   The Guestbook will be implemented via Python and its Flask web framework.</p>
+<p>To begin with, on a Linux VM or on your machine, clone the repository and change into the directory containing the code.</p>
+<pre>git clone https://github.com/bfritscher/guestbook-src.git
+cd cours-guestbook-src/01_mvc_pylist</pre>
+<p>This is the simplest version and has a file directory structure shown below (including the descriptions of what each file does).   </p>
+<pre>.
+├── app.py             # Controller
+├── Model.py           # Model (abstract base)
+├── model_pylist.py    # Model (Python list implementation)
+├── requirements.txt   # List of python packages needed
+├── static
+|   └── style.css      # View (stylesheet)
+└── templates
+    ├── index.html     # View (Index view)
+    └── layout.html    # View (abstract base)</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Model" duration="10">
+        <p>We will start with the model code.  We wish to support arbitrary backend databases, yet we do not want to re-implement all of our application code whenever a new backend database is used.  The beauty of an MVC-style architecture is that the separation of concerns allows you to support this.  Towards this end, the <code>Model.py</code> code below defines a simple abstract interface for two operations on a backend database.  The <code>select()</code> returns all rows of the database as a list of lists where each row contains a <code>name</code>, <code>email</code>, <code>date</code>, and <code>message</code> for a guestbook entry.  The <code>insert()</code> takes a <code>name</code>, <code>email</code>, and <code>message</code>, then generates a <code>date</code>, before inserting all four into the database.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/01_mvc_pylist/Model.py" target="_blank">Model.py</a></h3>
+<pre><code>class Model():
+    def select(self):
+        &#34;&#34;&#34;
+        Gets all rows from the database as a list of lists.
+        Row consists of name, email, date, and message.
+        :return: List of lists containing all rows of database
+        &#34;&#34;&#34;
+        pass
+
+    def insert(self, name, email, message):
+        &#34;&#34;&#34;
+        Inserts entry into database
+        :param name: String
+        :param email: String
+        :param message: String
+        :return: none
+        :raises: Database errors on connection and insertion
+        &#34;&#34;&#34;
+        pass</code></pre>
+<p>Our database backends will be derived from this abstract model, but hide the implementation of the database backend from the application.  As long as any of our derived models supports the calling interface above, they will work with the application. </p>
+<p>We start with a simple model implemented as an in-memory Python list.   As this model is stored in program memory, it will be destroyed when we terminate our application.  We will be replacing this model with a persistent database backend later.  As the code in <code>model_pylist.py</code> shows, the model class is derived from the abstract Model.  Its constructor sets the <code>guestentries</code> attribute as a blank list and each <code>insert()</code> appends a list containing the row information it is passed along with a generated timestamp (via <code>date.today()</code>).  The <code>select()</code> simply returns the <code>guestentries</code> attribute.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/01_mvc_pylist/model_pylist.py" target="_blank">model_pylist.py</a></h3>
+<pre><code>from datetime import date
+from datetime import datetime
+from Model import Model
+
+class model(Model):
+    def __init__(self):
+        self.guestentries = []
+
+    def select(self):
+        &#34;&#34;&#34;
+        Returns guestentries list of lists
+        Each list in guestentries contains: name, email, date, message
+        :return: List of lists
+        &#34;&#34;&#34;
+        return self.guestentries
+
+    def insert(self, name, email, message):
+        &#34;&#34;&#34;
+        Appends a new list of values representing new message into guestentries
+        :param name: String
+        :param email: String
+        :param message: String
+        :return: True
+        &#34;&#34;&#34;
+        params = [name, email, datetime.now(), message]
+        self.guestentries.append(params)
+        return True</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Controller" duration="2">
+        <p>The controller code is in <code>app.py</code>.  The code instantiates the application via the Flask package and the model backend via the code shown in the prior step.  It then registers two routes for the application.   The first route is the default page for viewing the guestbook.  This route creates a list of dictionaries where each dictionary is generated from one of the rows in the entries returned from <code>model.select()</code>.  This list is then passed to Flask&#39;s <code>render_template</code> which  will take the Jinja HTML template specified (<code>index.html</code>) and use the data in entries to render the final HTML returned to the client.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/01_mvc_pylist/app.py" target="_blank">app.py</a></h3>
+<pre><code>from flask import Flask, redirect, request, url_for, render_template
+from model_pylist import model
+
+app = Flask(__name__)       # our Flask app
+model = model()
+
+@app.route(&#39;/&#39;)
+def index():
+    entries = [dict(name=row[0], email=row[1], signed_on=row[2], message=row[3] ) for row in model.select()]
+    return render_template(&#39;index.html&#39;, entries=entries)</code></pre>
+<p>The second route is to handle form submissions via HTTP POST requests.  After pulling the form parameters out of the request via Flask, <code>model.insert()</code> is called to add them to the backend database (e.g. the Python list).  The application then redirects the client back to the first route.  Finally, the last part of the application runs the application if it is being called using the Python on port 8000 (default if not set is 5000).</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/01_mvc_pylist/app.py" target="_blank">app.py</a></h3>
+<pre><code>@app.route(&#39;/sign&#39;, methods=[&#39;POST&#39;])
+def sign():
+    &#34;&#34;&#34;
+    Accepts POST requests, and processes the form;
+    Redirect to index when completed.
+    &#34;&#34;&#34;
+    model.insert(request.form[&#39;name&#39;], request.form[&#39;email&#39;], request.form[&#39;message&#39;])
+    return redirect(url_for(&#39;index&#39;))
+
+if __name__ == &#39;__main__&#39;:
+    app.run(host=&#39;0.0.0.0&#39;, port=8000, debug=True)</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="View" duration="2">
+        <p>The view consists of two Jinja2 templates.  The first, <code>templates/layout.html</code>, serves as a &#34;base&#34; template for all derived templates.  This standardizes the layout of all pages.  As the template shows, all pages the title &#34;<code>My Visitors</code>&#34; and the same style sheet, which will be filled in by Jinja2 as the generated URL for the stylesheet in <code>static/style.css</code>.  The template contains a single page that specifies a block called <code>content</code>.  This block will be defined in a derived template.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/01_mvc_pylist/templates/layout.html" target="_blank">templates/layout.html</a></h3>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&#34;utf8&#34;/&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&#34; /&gt;
+    &lt;title&gt;My Visitors&lt;/title&gt;
+    &lt;link rel=stylesheet type=text/css href=&#34;&#123;&#123; url_for(&#39;static&#39;, filename=&#39;style.css&#39;) }}&#34;&gt;
+  &lt;/head&gt;
+  &lt;body class=&#34;page&#34;&gt;
+    {% block content %}{% endblock %}
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>The second Jinja2 template <code>templates/index.html</code> is derived from the base above.  It contains the form for submitting a new entry via the sign route.  It also outputs each entry it has been given.  Recall that it was given a list of dictionaries.  The for loop goes through each dictionary in the list, outputting the name, e-mail, date, and message.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/01_mvc_pylist/templates/index.html" target="_blank">templates/index.html</a></h3>
+<pre><code>{% extends &#34;layout.html&#34; %}
+{% block content %}
+  &lt;h2&gt;Guestbook&lt;/h2&gt;
+  &lt;form action=&#34;&#123;&#123; url_for(&#39;sign&#39;) }}&#34; method=&#34;post&#34; class=&#34;box&#34;&gt;
+    &lt;label&gt;&lt;span&gt;Name:&lt;/span&gt;&lt;input type=&#34;text&#34; name=&#34;name&#34; required /&gt;&lt;/label&gt;
+    &lt;label&gt;&lt;span&gt;Email:&lt;/span&gt;&lt;input type=&#34;text&#34; name=&#34;email&#34; /&gt;&lt;/label&gt;
+    &lt;label&gt;&lt;span&gt;Message:&lt;/span&gt;&lt;textarea name=&#34;message&#34; required&gt;&lt;/textarea&gt;&lt;/label&gt;
+    &lt;label&gt;&lt;span&gt;&lt;/span&gt;&lt;input type=&#34;submit&#34; value=&#34;Sign&#34; /&gt;&lt;/label&gt;
+  &lt;/form&gt;
+
+  &lt;h2&gt;Entries&lt;/h2&gt;
+  {% for entry in entries|reverse %}
+    &lt;section class=&#34;entry box&#34;&gt;
+      &lt;pre&gt;&#123;&#123; entry.message }}&lt;/pre&gt;
+      &lt;header&gt;
+        &#123;&#123; entry.name }} {% if entry.email %}&amp;lt;&#123;&#123; entry.email }}&amp;gt;{% endif %}
+        &lt;em&gt;signed on &#123;&#123; entry.signed_on.strftime(&#34;%d.%m.%Y at %H:%M&#34;) }}&lt;/em&gt;
+      &lt;/header&gt;
+    &lt;/section&gt;
+  {% endfor %}
+{% endblock %}</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Running the code" duration="2">
+        <aside class="warning"><p><strong>Note:</strong> On Ubuntu, first install the packages needed to support the use of Python and its Flask package by performing:</p>
+<p><code>sudo apt update</code></p>
+<p><code>sudo apt install python3-dev build-essential python3-venv -y</code></p>
+</aside>
+<p>Within the directory containing the application, create a Python 3 virtual environment. This allows us to install custom Python packages specifically for our application without modifying the system&#39;s version of Python.   After creating the environment, activate it.  Note that you must always activate the environment whenever you wish to run the application with its installed packages.</p>
+<pre>python3 -m venv env
+source env/bin/activate</pre>
+<p>Or on windows with PowerShell</p>
+<pre>python -m venv env
+.\env\Scripts\Activate.ps1</pre>
+<p>By convention with Python applications, a list of packages to install for an application is given in a file called <code>requirements.txt</code>.  Viewing this file shows us that the application uses <code>flask</code> for handling web requests. To install the packages, we&#39;ll run <code>pip</code> and point it to this file.</p>
+<pre>pip install -r requirements.txt</pre>
+<p>Finally, we&#39;ll run the application</p>
+<pre>python app.py</pre>
+<p>You should see the following:</p>
+<p class="image-container"><img style="width: 624.00px" src="img/bad453b8020135d9.png"></p>
+<p>This is Python&#39;s development web server.  It&#39;s meant for testing.  As the UI shows, the server is running on port <code>5000</code> and is listening to connections on all interfaces (e.g. <code>0.0.0.0</code>).  Launch a browser on your local machine or inside your VM and visit the site running via <code>http://localhost:5000</code></p>
+<ul>
+<li><strong>Add an entry that includes your e-mail address in it and the message &#34;Hello Flask!&#34;.  Take a screenshot of the resulting page for your lab notebook.</strong></li>
+</ul>
+<p class="image-container"><img style="width: 624.00px" src="img/f80d3ce6e0142fbe.png"></p>
+<p>Then, view the requests that show up in the terminal running the server.  Within the terminal, type &#34;<code>Ctrl+c</code>&#34; to stop it.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

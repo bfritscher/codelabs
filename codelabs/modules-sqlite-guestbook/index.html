@@ -1,0 +1,216 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Modules sqlite3 Guestbook</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="modules-sqlite-guestbook"
+                  title="Modules sqlite3 Guestbook"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/1soKLnsCqVP8N2y-nKl6FQVc1Kjs2QErcYGNTuZ5TqYI">
+    
+      <google-codelab-step label="sqlite3" duration="2">
+        <p class="image-container"><img style="width: 624.00px" src="img/43e085a9589ac6c5.png"></p>
+<p>The previous version of the Guestbook stores the model data in memory using a Python list.  Unfortunately, this data is lost when the server is terminated.  In this version, we create a second Model using a sqlite3 backend.   sqlite3 implements a simple file-based database that supports standard SQL querying.   This version also modularizes the Model code into its own package as well as shifts the application to an MVP architecture.  To view the code, change into its directory within the repository.</p>
+<pre>cd guestbook-src/02_mvp_modules_sqlite3</pre>
+<p>The directory structure is shown below.  It contains two views and their associated presenters (<code>index.{py,html}</code> and <code>sign.{py,html}</code>).  In addition, it contains the directory <code>gbmodel</code> which implements a package containing the database backend code including the abstract base (<code>Model.py</code>), the Python list implementation (<code>model_pylist.py</code>), the sqlite3 implementation (<code>model_sqlite3.py</code>) and an initialization file for the package (<code>__init__.py</code>)</p>
+<pre>02_mvp_modules_sqlite3
+├── app.py
+├── gbmodel
+│   ├── __init__.py
+│   ├── Model.py
+│   ├── model_pylist.py
+│   └── model_sqlite3.py
+├── index.py
+├── requirements.txt
+├── sign.py
+├── static
+│   └── style.css
+└── templates
+    ├── index.html
+    ├── layout.html
+    └── sign.html</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="gbmodel package" duration="10">
+        <p>Python supports creating your own packages to encourage code modularity.  A package can be created by creating a directory and specifying a single, specially named file <code>__init__.py</code> that serves as the constructor for the package when it is imported by other Python code.  For the <code>gbmodel</code> package, the constructor simply sets which model backend is going to be used for the site, in this case Python&#39;s built-in <code>sqlite3</code> database.  The constructor also instantiates the model from and implements the <code>get_model()</code> function to return it to the web application.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/gbmodel/__init__.py" target="_blank">gbmodel/__init__.py</a></h3>
+<pre><code>model_backend = &#39;sqlite3&#39;
+# model_backend = &#39;pylist&#39;
+
+if model_backend == &#39;sqlite3&#39;:
+    from .model_sqlite3 import model
+elif model_backend == &#39;pylist&#39;:
+    from .model_pylist import model
+else:
+    raise ValueError(&#34;No appropriate databackend configured. &#34;)
+
+appmodel = model()
+
+def get_model():
+    return appmodel</code></pre>
+<p>As the package constructor shows, we have implemented a new <code>sqlite3</code> backend.  The code for the backend is in <code>model_sqlite3.py</code>.  The part that implements the DDL (Data Definition Language) is shown below.  As the code shows, the abstract base class <code>Model</code> is first imported along with the <code>sqlite3</code> package.  Then, the file storing the database (<code>entries.db</code>) is specified.  This file will be created in the directory that the web application is run from and will persist across invocations.  The model constructor then creates a connection to the file and attempts a query to see if the <code>guestbook</code> table exists in the file.  Upon receiving an error (which will be thrown if the table does not exist), it performs the SQL statement that creates the initial <code>guestbook</code> table along with its schema.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/gbmodel/model_sqlite3.py" target="_blank">gbmodel/model_sqlite3.py</a></h3>
+<pre><code>from .Model import Model
+from datetime import datetime
+import sqlite3
+DB_FILE = &#39;entries.db&#39;    # file for our Database
+
+class model(Model):
+    def __init__(self):
+        # Make sure our database exists
+        connection = sqlite3.connect(DB_FILE)
+        cursor = connection.cursor()
+        try:
+            cursor.execute(&#34;SELECT count(rowid) FROM guestbook&#34;)
+        except sqlite3.OperationalError:
+            cursor.execute(&#34;create table guestbook (name text, email text, signed_on timestamp, message)&#34;)
+        cursor.close()</code></pre>
+<p>The rest of the code in <code>model_sqlite3.py</code> implements the DML (Data Manipulation Language) part of the backend.  As the code shows, the <code>select()</code> method simply returns all rows from the guestbook table as a list of lists. We have to add a <a href="https://docs.python.org/3/library/sqlite3.html#default-adapters-and-converters" target="_blank">detect_types</a> argument to the connection for the timestamp to be converted back to a <code>datetime</code> object, otherwise it would be a <code>str</code>. </p>
+<p>The <code>insert()</code> method takes the <code>(name, email, message)</code> strings, then generates a timestamp (<code>datetime.now()</code>) before inserting them all into the <code>guestbook</code> table.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/gbmodel/model_sqlite3.py" target="_blank">gbmodel/model_sqlite3.py</a></h3>
+<pre><code>   def select(self):
+        connection = sqlite3.connect(DB_FILE, detect_types=sqlite3.PARSE_DECLTYPES)
+        cursor = connection.cursor()
+        cursor.execute(&#34;SELECT * FROM guestbook&#34;)
+        return cursor.fetchall()
+
+    def insert(self, name, email, message):
+        params = {&#39;name&#39;:name, &#39;email&#39;:email, &#39;datetime&#39;:datetime.now(), &#39;message&#39;:message}
+        connection = sqlite3.connect(DB_FILE)
+        cursor = connection.cursor()
+        cursor.execute(&#34;INSERT INTO guestbook (name, email, signed_on, message) VALUES (:name, :email, :datetime, :message)&#34;, params)
+
+        connection.commit()
+        cursor.close()
+        return True</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Presenter architecture" duration="5">
+        <p>In an MVP architecture, the controller code is split into individual &#34;presenters&#34; with each presenter bound to a view that it implements.   In this case, there are two main parts of the code, that for rendering the guestbook and its entries (<code>index.py</code> and <code>index.html</code>) and that for inserting new guestbook entries (<code>sign.py</code> and <code>sign.html</code>).  The implementation also leverages Flask&#39;s &#34;<code>MethodView</code>&#34;, a common design pattern in which code is defined based on the HTTP request method being used (e.g. GET, POST, HEAD, PUT, etc.).   The code below shows the changes to app.py to implement this architecture.  As the code shows, two presenter classes are imported (<code>Index</code> and <code>Sign</code>) and routes that are bound to the MethodViews within them are defined (e.g. accessing &#39;<code>/</code>&#39; with a GET method goes to <code>Index</code> while accessing &#39;<code>/sign/</code>&#39; with either a GET or a POST goes to <code>Sign</code>.</p>
+<h3 is-upgraded><a href="https://github.com/wu4f/cs430-src/blob/master/02_mvp_modules_sqlite3/app.py" target="_blank">app.py</a></h3>
+<pre><code>import flask
+from flask.views import MethodView
+from index import Index
+from sign import Sign
+
+app = flask.Flask(__name__)       # our Flask app
+
+app.add_url_rule(&#39;/&#39;,
+                 view_func=Index.as_view(&#39;index&#39;),
+                 methods=[&#34;GET&#34;])
+
+app.add_url_rule(&#39;/sign/&#39;,
+                 view_func=Sign.as_view(&#39;sign&#39;),
+                 methods=[&#39;GET&#39;, &#39;POST&#39;])</code></pre>
+<p>To see how the presenter is implemented, the code below shows the code in <code>sign.py</code> which implements the <code>Sign</code> presenter as a subclass of Flask&#39;s <code>MethodView</code>.  As the code shows, the class implements both the GET and POST methods for the <code>Sign</code> presenter.  The GET method simply sends the user to the HTML form in sign.html while the POST method handles the submission of the HTML form in sign.html, pulling out its parameters and then calling <code>model.insert()</code> to place them into the backend.  The code then redirects the browser to the <code>index</code> route upon completion.</p>
+<h3 is-upgraded><a href="https://github.com/wu4f/cs430-src/blob/master/02_mvp_modules_sqlite3/sign.py" target="_blank">sign.py</a></h3>
+<pre><code>from flask import redirect, request, url_for, render_template
+from flask.views import MethodView
+import gbmodel
+
+class Sign(MethodView):
+    def get(self):
+        return render_template(&#39;sign.html&#39;)
+
+    def post(self):
+        &#34;&#34;&#34;
+        Accepts POST requests, and processes the form;
+        Redirect to index when completed.
+        &#34;&#34;&#34;
+        model = gbmodel.get_model()
+        model.insert(request.form[&#39;name&#39;], request.form[&#39;email&#39;], request.form[&#39;message&#39;])
+        return redirect(url_for(&#39;index&#39;))</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Running the code" duration="5">
+        <p>Log back into a linuxlab machine or your local Ubuntu VM that you are running the web application on.  Change into the repository that contains the code.</p>
+<pre>cd guestbook-src/02_mvp_modules_sqlite3</pre>
+<p>As before, create a Python 3 virtual environment and install the packages specified in <code>requirements.txt</code> (e.g. <code>flask</code>)</p>
+<pre>python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt</pre>
+<p>Then, start the server.</p>
+<pre>python app.py</pre>
+<p>Visit the site as before and add an entry that includes your PSU e-mail address in it and the message &#34;python/flask MVP sqlite3 #1&#34;.  Then, type &#34;<code>Ctrl+c</code>&#34; to stop the server.  Perform a directory listing to see that the sqlite3 database file <code>entries.db</code> has been created. </p>
+<p>Start the server again.  The original message should still appear as it has been read from the <code>entries.db</code> file.  Add another entry using your PSU e-mail address and the message &#34;python/flask MVP sqlite3 #2&#34;.  </p>
+<ul>
+<li><strong>Take a screenshot of the resulting page for your lab notebook</strong></li>
+</ul>
+<p>Then, type &#34;<code>Ctrl+c</code>&#34; to stop the server again.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="sqlite3 database" duration="5">
+        <p>While our code directly creates and interacts with sqlite3 database, we can also use command line tools to do so similar to SQL-based CLIs for Postgres (<code>pg</code>) and MySQL (<code>mysql</code>). </p>
+<h2 is-upgraded><strong>VS Code</strong></h2>
+<p>In vscode you can access the database with many extensions.</p>
+<p>This is a popular one:</p>
+<ul>
+<li>vscode:extension/mtxr.sqltools</li>
+<li>vscode:extension/mtxr.sqltools-driver-sqlite</li>
+</ul>
+<h2 is-upgraded><strong>Command Line</strong></h2>
+<p>If you are using your own local Ubuntu VM, you can install the CLI by running the command: <code>sudo apt-get install sqlite3 libsqlite3-dev</code></p>
+<p>Bring up the entries.db database within sqlite3 via the following command:</p>
+<pre>sqlite3 entries.db</pre>
+<p><strong>Then, within the sqlite client, perform the following commands and take a screenshot of their output to include in your lab notebook. </strong></p>
+<ul>
+<li>List the tables in the database and note the table name</li>
+</ul>
+<pre>sqlite&gt; .tables</pre>
+<ul>
+<li>Then, output the schema for the table via its name</li>
+</ul>
+<pre>sqlite&gt; .schema &lt;table_name&gt;</pre>
+<ul>
+<li>Finally, perform a SQL query to dump out all rows in the table</li>
+</ul>
+<pre>sqlite&gt; select * from &lt;table_name&gt;;</pre>
+<h2 is-upgraded><strong>Primary Key</strong></h2>
+<aside class="warning"><p><strong>Note:</strong> sqlite has an implicit primary key by using ROWID.</p>
+</aside>
+<p>We therefore did not need ot add a primary key column.</p>
+<p>You can see it with:</p>
+<pre>sqlite&gt; SELECT rowid, * from &lt;table_name&gt;;</pre>
+<p>And also used it:</p>
+<pre>sqlite&gt; UPDATE guestbook SET email = &#34;test@test.com&#34; WHERE rowid = 1;</pre>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
