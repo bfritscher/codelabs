@@ -4,16 +4,18 @@
 ARG VARIANT="14"
 FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
 
-ENV PATH="$PATH:/usr/local/go/bin:/home/node/go/bin"
+# ENV PATH="$PATH:/usr/local/go/bin:/home/node/go/bin"
 
 EXPOSE 8000
 
-# [Optional] Uncomment this section to install additional OS packages.
-RUN wget https://go.dev/dl/go1.20.linux-amd64.tar.gz \
-    && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz \
-    && rm go1.20.linux-amd64.tar.gz
+RUN curl -sL  $(curl -s https://api.github.com/repos/bfritscher/codelabs-tools/releases/latest | grep browser_download_url | cut -d\" -f4 | grep 'claat-linux-amd64') -o /usr/local/bin/claat && chmod 755 /usr/local/bin/claat
 
-RUN su node -c "/usr/local/go/bin/go install github.com/googlecodelabs/tools/claat@latest"
+# [Optional] Uncomment this section to install additional OS packages.
+# RUN wget https://go.dev/dl/go1.20.linux-amd64.tar.gz \
+#    && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz \
+#    && rm go1.20.linux-amd64.tar.gz
+
+# RUN su node -c "/usr/local/go/bin/go install github.com/bfritscher/codelabs-tools/claat@latest"
 RUN sudo -u node npm install -g gulp-cli nodemon
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10

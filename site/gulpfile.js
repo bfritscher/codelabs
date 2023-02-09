@@ -482,6 +482,9 @@ const collectMetadata = () => {
       const codelab = parseCodelabMetadata(codelabFiles[i]);
       codelabs.push(codelab);
       categories[codelab.mainCategory] = true;
+      for(const cat of codelab.category) {
+        categories[cat] = true;
+      }
     }
 
     _allMetadata = {
@@ -778,6 +781,9 @@ const filterCodelabs = (view, codelabs) => {
   for (var i in codelabs) {
     var cat = levelledCategory(codelabs[i], view.catLevel);
     categories[cat.name] = true;
+    for (const c of codelabs[i].category) {
+      categories[c] = true;
+    }
   }
 
   // sort the codelabs.

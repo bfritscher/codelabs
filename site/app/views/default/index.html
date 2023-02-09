@@ -138,9 +138,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-tab>Recent</paper-tab>
             <paper-tab>Duration</paper-tab>
           </paper-tabs>
-        </div> 
+        </div>
 
-        {% if view.id == 'default' && views|length > 1 %}
+        {% if views|length > 1 %}
         <paper-dropdown-menu
           label="Choose a class"
           class="dropdown-filter"
@@ -152,6 +152,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             slot="dropdown-content"
             class="dropdown-content"
           >
+            <a href="/" tabindex="-1">
+              <paper-item>None</paper-item>
+            </a>
             {%- for view in views -%}
               {%- if view.id != 'default' && !view.hidden -%}
                 <a href="/{{view.url}}/" tabindex="-1">
@@ -177,6 +180,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             on-iron-activate="onCategoryActivate"
             attr-for-selected="filter"
           >
+            <paper-item filter="">All</paper-item>
               {% for category in categories -%}
                 {%- if categoryHasShowableCodelabs(category, codelabs) -%}
                   <paper-item filter="{{category}}">{{category}}</paper-item>
@@ -211,7 +215,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <span>{%- if codelab.updated -%}Updated {{codePrettyDate(codelab.updated)}}{%- endif -%}</span>
               </div>
               <div class="card-footer">
-                <div class="category-icon {{categoryClass(codelab, cat.level)}}-icon"></div>
+                <div class="category-wrapper">
+                {%- for cat in codelab.category -%}
+                  <div class="category-icon {{cat}}-icon"></div>
+                {%- endfor -%}
+                </div>
                 <paper-button class="{{categoryClass(codelab, cat.level)}}-bg">Start</paper-button>
               </div>
             </a>

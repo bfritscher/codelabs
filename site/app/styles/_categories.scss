@@ -48,6 +48,14 @@ $color-tools: #f36f23;
 $color-vuejs: #42b883;
 $color-python: #3772a3;
 $color-django: #092E20;
+$color-docker: #2496ED;
+$color-kubernetes: #326CE5;
+$color-openstack: #ED1944;
+$color-vagrant: #1159cc;
+$color-sql: #fc0;
+$color-vm: #00188f;
+$color-pulumi: #805ac3;
+$color-flask: #000000;
 
 /* Mixins */
 
@@ -216,3 +224,27 @@ $color-weave-green, 'weave.svg');
 
 @include codelab-card(['django'],
   $color-django, 'django.png');
+
+@include codelab-card(['docker'],
+  $color-docker, 'docker.svg');
+
+@include codelab-card(['kubernetes', 'k8s'],
+  $color-kubernetes, 'kubernetes.svg');
+
+@include codelab-card(['openstack'],
+  $color-openstack, 'openstack.svg');
+
+@include codelab-card(['vagrant'],
+  $color-vagrant, 'vagrant.svg');
+
+@include codelab-card(['sql'],
+  $color-sql, 'database.svg');
+
+@include codelab-card(['vm'],
+  $color-vm, 'vm.svg');
+
+@include codelab-card(['pulumi'],
+  $color-pulumi, 'pulumi.svg');
+
+@include codelab-card(['flask'],
+  $color-flask, 'flask.png');
