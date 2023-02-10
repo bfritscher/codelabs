@@ -1,0 +1,205 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Introduction to Django and Django REST Framework</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="introduction-to-django-and-drf"
+                  title="Introduction to Django and Django REST Framework"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/19UBl3yS10p8lkptdc4sPhPBMiBlt7-swq142aowTt6Q">
+    
+      <google-codelab-step label="Introduction" duration="0">
+        <p><strong>Last Updated:</strong> 2023-02-10</p>
+<p>In this codelab, you&#39;ll learn the basics about Django and Django REST Framework.</p>
+<p>After a short introduction, we provide a selection of link to the official tutorials. They are carefully picked to cover the required parts to understand the project steup used during this course. Therefore, they do not always start at the beginning and propose to skip some steps. Naturally, you are free to also look at the optional tutorials to further extend your understanding.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p class="image-container"><img style="width: 298.00px" src="img/a15968195a1ecbe8.png"></p>
+</td><td colspan="1" rowspan="1"><p class="image-container"><img style="width: 298.00px" src="img/e71f42955fe6703b.png"></p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Django" duration="0">
+        <p>Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design. Built by experienced developers, it takes care of much of the hassle of web development, so you can focus on writing your app without needing to reinvent the wheel.</p>
+<p>Django is <em>&#34;somewhat opinionated&#34;</em>, and hence delivers the <em>&#34;best of both worlds&#34;</em>. It provides a set of components to handle most web development tasks and one (or two) preferred ways to use them. However, Django&#39;s decoupled architecture means that you can usually pick and choose from a number of different options, or add support for completely new ones if desired. </p>
+<h2 is-upgraded><strong>Architecture</strong></h2>
+<p>Django web applications typically group the code that handles each of these steps into separate files:</p>
+<p class="image-container"><img style="width: 624.00px" src="img/97a0eee30cfafe39.png"></p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction#is_django_opinionated" target="_blank">source</a></p>
+<h2 is-upgraded><strong>Django Administration</strong></h2>
+<p>One of the most powerful parts of Django is the automatic admin interface. It reads metadata from your models to provide a quick, model-centric interface where trusted users can manage content on your site.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/6142aea178a8a4b8.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Django REST Framework" duration="0">
+        <p>In this course we want to separate the client and the backend. Therefore, we are not using the Views/Template part of Django and instead replace it with a RESTful API consumed by the frontend Single Page App written in Vue.js. </p>
+<p class="image-container"><img style="width: 624.00px" src="img/5596a5b7110eb49e.png"></p>
+<p><em>Source: </em><a href="https://www.bezkoder.com/django-vue-js-rest-framework/" target="_blank">https://www.bezkoder.com/django-vue-js-rest-framework/</a></p>
+<p><strong>Django REST framework (DRF)</strong> is a powerful and flexible toolkit for building Web APIs.</p>
+<p><a href="https://www.django-rest-framework.org/" target="_blank">https://www.django-rest-framework.org/</a></p>
+<ul>
+<li>The Web browsable API is a huge usability win for your developers.</li>
+<li>Serialization which integrates with the Django ORM</li>
+<li>Extensive documentation</li>
+</ul>
+<h2 is-upgraded><strong>Django Request with DRF</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/1ffda0247547cd3f.png"></p>
+<p><em>Source: </em><a href="https://www.bezkoder.com/django-rest-api/" target="_blank">https://www.bezkoder.com/django-rest-api/</a></p>
+<ul>
+<li>HTTP requests will be matched by Url Patterns and passed to the Views</li>
+<li>Views processes the HTTP requests and returns HTTP responses (with the help of Serializer)</li>
+<li>Serializer serializes/deserializes data model objects</li>
+<li>Models contains essential fields and behaviors for CRUD Operations with Database</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Django Concepts" duration="0">
+        <p>The following concepts should be understood to successfully implement the project. A tutorial is provided, but it is encouraged to further look into the <a href="https://docs.djangoproject.com/" target="_blank">documentation </a>for more details.</p>
+<aside class="special"><p><strong>Note:</strong> Django Documentation is also available in <a href="https://docs.djangoproject.com/fr/" target="_blank">french</a></p>
+</aside>
+<aside class="warning"><p><strong>Warning: </strong>Check that you use the documentation corresponding to the version of the library you are using!</p>
+</aside>
+<p>We asume that you already have python3 &gt;= 3.8 installed</p>
+<p>If this is not the case you, can get the latest version of Python at<a href="https://www.python.org/downloads/" target="_blank"> https://www.python.org/downloads/</a> or with your operating system&#39;s package manager.</p>
+<p>You then can install the latest version of Django with the following command:</p>
+<pre>python -m pip install Django</pre>
+<p>You are now all set to follow the tutorials.</p>
+<p>Have fun learning Django!</p>
+<h3 is-upgraded><strong>Setting up a Django project and create an app</strong></h3>
+<p>You will learn your first management commands to create a project and start a server.</p>
+<p><strong>Do: </strong><a href="https://docs.djangoproject.com/en/4.1/intro/tutorial01/" target="_blank">https://docs.djangoproject.com/en/4.1/intro/tutorial01/</a></p>
+<h3 is-upgraded><strong>Django Model and Migrations</strong></h3>
+<p>You will learn how to create models and apply them to the database via migrations.</p>
+<p><strong>Do: </strong><a href="https://docs.djangoproject.com/en/4.1/intro/tutorial02/" target="_blank">https://docs.djangoproject.com/en/4.1/intro/tutorial02/</a></p>
+<aside class="special"><p><strong>Note:</strong> Want more information on the ORM? Check out these topics in the documentation:</p>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/4.1/topics/db/models/" target="_blank">https://docs.djangoproject.com/en/4.1/topics/db/models/</a></li>
+<li><a href="https://docs.djangoproject.com/en/4.1/topics/db/queries/" target="_blank">https://docs.djangoproject.com/en/4.1/topics/db/queries/</a></li>
+</ul>
+</aside>
+<h3 is-upgraded><strong>Django Administration Interface</strong></h3>
+<p>In addition, you will discover the powerful Django Administration Interface</p>
+<p>Basics :<a href="https://docs.djangoproject.com/en/4.1/intro/tutorial02/" target="_blank">https://docs.djangoproject.com/en/4.1/intro/tutorial02/</a></p>
+<p>To see more customization of the admin jump to: </p>
+<p><strong>Do: </strong><a href="https://docs.djangoproject.com/en/4.1/intro/tutorial07/" target="_blank">https://docs.djangoproject.com/en/4.1/intro/tutorial07/</a></p>
+<h3 is-upgraded><strong>Optional</strong></h3>
+<aside class="warning"><p><strong>Warning: </strong>If you check out <a href="https://docs.djangoproject.com/en/4.1/intro/tutorial03/" target="_blank">https://docs.djangoproject.com/en/4.1/intro/tutorial03/</a> </p>
+<p>We will learn about Django URLs, we recommend however to wait for the version of URL explanation as covered in later Django REST Framework parts.</p>
+<p>This tutorial also covers <strong><em>views, template and forms,</em></strong> which we will <strong>NOT</strong> use in this project!</p>
+<p><strong>Reminder: </strong>We opted to use Django Rest Framework as backend API and a frontend Vue.js client.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Django Rest Framework Concepts" duration="0">
+        <p>The following concepts should be understood to successfully implement the project. A tutorial is provided, but it is encouraged to further look into the <a href="https://www.django-rest-framework.org/api-guide/viewsets/" target="_blank">documentation </a>for more details</p>
+<h3 is-upgraded><strong>Setting up</strong></h3>
+<p>Follow the very quick start:<a href="https://www.django-rest-framework.org/tutorial/quickstart/" target="_blank">https://www.django-rest-framework.org/tutorial/quickstart/</a></p>
+<p>Or follow the official tutorial starting here:<a href="https://www.django-rest-framework.org/tutorial/1-serialization/" target="_blank">https://www.django-rest-framework.org/tutorial/1-serialization/</a></p>
+<h3 is-upgraded><strong>Serializer / ModelSerializers</strong></h3>
+<p>You will learn how serializers allow to transform data from Complex Django ORM objects to JSON and back. The first step towards building an API.</p>
+<p><strong>Do: </strong><a href="https://www.django-rest-framework.org/tutorial/1-serialization/" target="_blank">https://www.django-rest-framework.org/tutorial/1-serialization/</a></p>
+<h3 is-upgraded><strong>Views and Class based Views</strong></h3>
+<p>Following the official tutorial you will learn about basics elements to create your API. However, notice that there exits a simpler way to handle this: <em>viewsets</em>. They build upon these concepts, but simplify wastly the required written code. <strong>We will prefer viewsets for the project!</strong></p>
+<p><strong>Do: </strong><a href="https://www.django-rest-framework.org/tutorial/2-requests-and-responses/" target="_blank">https://www.django-rest-framework.org/tutorial/2-requests-and-responses/</a></p>
+<p><strong>Do: </strong><a href="https://www.django-rest-framework.org/tutorial/3-class-based-views/" target="_blank">https://www.django-rest-framework.org/tutorial/3-class-based-views/</a></p>
+<h3 is-upgraded><strong>Authentication &amp; Permissions</strong></h3>
+<p>Building a writable API for the realworld requires to understand how to protect it.</p>
+<aside class="special"><p><strong>Note:</strong> Remember the difference between Authentication and Authorization:</p>
+<ul>
+<li><strong>Authentication </strong>verifies the identity of a user or service.</li>
+<li><strong>Authorization (Permissions)</strong> determines their access rights.</li>
+</ul>
+</aside>
+<p><strong>Do: </strong><a href="https://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/" target="_blank">https://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/</a></p>
+<h3 is-upgraded><strong>ViewSets &amp; Routers</strong></h3>
+<p>Using viewsets can be a really useful abstraction. It helps ensure that URL conventions will be consistent across your API, minimizes the amount of code you need to write, and allows you to concentrate on the interactions and representations your API provides rather than the specifics of the URL conf.</p>
+<p><strong>Do: </strong><a href="https://www.django-rest-framework.org/tutorial/6-viewsets-and-routers/" target="_blank">https://www.django-rest-framework.org/tutorial/6-viewsets-and-routers/</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Advanced topics" duration="0">
+        <h3 is-upgraded><strong>CORS</strong></h3>
+<p>Cross-Origin Resource Sharing (<a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS" target="_blank">CORS</a>) is an <a href="https://developer.mozilla.org/en-US/docs/Glossary/HTTP" target="_blank">HTTP</a>-header based mechanism that allows a server to indicate any <a href="https://developer.mozilla.org/en-US/docs/Glossary/Origin" target="_blank">origins</a> (domain, scheme, or port) other than its own from which a browser should permit loading resources.</p>
+<p><strong>If this is not configured correctly on the server a browser will block request from a different domain or localhost of your JavaScript application.</strong></p>
+<ul>
+<li><a href="https://www.stackhawk.com/blog/django-cors-guide/" target="_blank">https://www.stackhawk.com/blog/django-cors-guide/</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS" target="_blank">https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS</a></li>
+</ul>
+<h3 is-upgraded><strong>JSON Web Tokens (JWT) Authentication</strong></h3>
+<p>JSON Web Token is an open industry standard used to share information between two entities, usually a client (like your app&#39;s frontend) and a server (your app&#39;s backend).</p>
+<p>They contain JSON objects which have the information that needs to be shared. Each JWT is also signed using cryptography (hashing) to ensure that the JSON contents (also known as JWT claims) cannot be altered by the client or a malicious party.</p>
+<p><strong>With this we can have stateless API without needing sessions cookies. The Resource Server does not need to check back with the Authorization Server and can be a separate server.</strong></p>
+<p class="image-container"><img style="width: 624.00px" src="img/3bba847250af33aa.png"></p>
+<ul>
+<li><a href="https://code.tutsplus.com/tutorials/how-to-authenticate-with-jwt-in-django--cms-30460" target="_blank">https://code.tutsplus.com/tutorials/how-to-authenticate-with-jwt-in-django--cms-30460</a></li>
+<li><a href="https://jwt.io/introduction" target="_blank">https://jwt.io/introduction</a></li>
+</ul>
+<h2 is-upgraded><strong>Other Full Tutorials</strong></h2>
+<ul>
+<li><a href="https://www.bezkoder.com/django-rest-api/" target="_blank">https://www.bezkoder.com/django-rest-api/</a></li>
+<li><a href="https://www.bezkoder.com/django-vue-js-rest-framework/" target="_blank">https://www.bezkoder.com/django-vue-js-rest-framework/</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="What&#39;s next?" duration="0">
+        <p>Take a look (and try to run) the provided sample application integrating all the presented concept in one repository.</p>
+<p><a href="https://github.com/heg-interschool/django-vue-template" target="_blank">https://github.com/heg-interschool/django-vue-template</a></p>
+<p>A simple Model of a message which can be edited only by an authenticated user</p>
+<p> Includes:</p>
+<ul>
+<li>Django</li>
+<li>Django REST framework</li>
+<li>Django CORS Headers</li>
+<li>Login via JWT using dj-rest-auth</li>
+<li>Vue 3 created with Vite</li>
+<li>Vue Router</li>
+</ul>
+<p class="image-container"><img style="width: 624.00px" src="img/9044d58245b4a4cb.png"></p>
+<aside class="special"><p><strong>Hint:</strong></p>
+<p>When you are ready to build your app&#39;s models you can use tools like <a href="https://djangobuilder.io/#/" target="_blank">https://djangobuilder.io/#/</a> to help you generate django files. </p>
+<p><strong>But remember we only use admin and rest all the views (except admin)  have to be in Vue.js frontend!</strong></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

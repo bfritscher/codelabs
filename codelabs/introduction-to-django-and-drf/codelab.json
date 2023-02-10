@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-10T20:20:41Z",
+  "id": "introduction-to-django-and-drf",
+  "duration": 0,
+  "title": "Introduction to Django and Django REST Framework",
+  "authors": "Boris Fritscher",
+  "summary": "In this codelab, you'll learn the basics about Django and Django REST Framework.",
+  "source": "19UBl3yS10p8lkptdc4sPhPBMiBlt7-swq142aowTt6Q",
+  "theme": "python",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "python",
+    "django"
+  ],
+  "tags": [
+    "interschool"
+  ],
+  "feedback": "https://docs.google.com/document/d/19UBl3yS10p8lkptdc4sPhPBMiBlt7-swq142aowTt6Q",
+  "url": "introduction-to-django-and-drf"
+}
