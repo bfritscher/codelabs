@@ -25,18 +25,18 @@
                   id="modules-sqlite-guestbook"
                   title="Modules sqlite3 Guestbook"
                   environment="web"
-                  feedback-link="https://docs.google.com/document/d/1soKLnsCqVP8N2y-nKl6FQVc1Kjs2QErcYGNTuZ5TqYI">
+                  feedback-link="https://docs.google.com/document/d/1soKLnsCqVP8N2y-nKl6FQVc1Kjs2QErcYGNTuZ5TqYI/edit">
     
       <google-codelab-step label="sqlite3" duration="2">
         <p class="image-container"><img style="width: 624.00px" src="img/43e085a9589ac6c5.png"></p>
 <p>The previous version of the Guestbook stores the model data in memory using a Python list.  Unfortunately, this data is lost when the server is terminated.  In this version, we create a second Model using a sqlite3 backend.   sqlite3 implements a simple file-based database that supports standard SQL querying.   This version also modularizes the Model code into its own package as well as shifts the application to an MVP architecture.  To view the code, change into its directory within the repository.</p>
 <pre>cd guestbook-src/02_mvp_modules_sqlite3</pre>
-<p>The directory structure is shown below.  It contains two views and their associated presenters (<code>index.{py,html}</code> and <code>sign.{py,html}</code>).  In addition, it contains the directory <code>gbmodel</code> which implements a package containing the database backend code including the abstract base (<code>Model.py</code>), the Python list implementation (<code>model_pylist.py</code>), the sqlite3 implementation (<code>model_sqlite3.py</code>) and an initialization file for the package (<code>__init__.py</code>)</p>
+<p>The directory structure is shown below.  It contains two views and their associated presenters (<code>index.{py,html}</code> and <code>sign.{py,html}</code>).  In addition, it contains the directory <code>gbmodel</code> which implements a package containing the database backend code including the abstract base (<code>model.py</code>), the Python list implementation (<code>model_pylist.py</code>), the sqlite3 implementation (<code>model_sqlite3.py</code>) and an initialization file for the package (<code>__init__.py</code>)</p>
 <pre>02_mvp_modules_sqlite3
 ├── app.py
 ├── gbmodel
 │   ├── __init__.py
-│   ├── Model.py
+│   ├── model.py
 │   ├── model_pylist.py
 │   └── model_sqlite3.py
 ├── index.py
@@ -59,9 +59,9 @@
 # model_backend = &#39;pylist&#39;
 
 if model_backend == &#39;sqlite3&#39;:
-    from .model_sqlite3 import model
+    from .model_sqlite3 import ModelSqlite as model
 elif model_backend == &#39;pylist&#39;:
-    from .model_pylist import model
+    from .model_pylist import ModelPylist as model
 else:
     raise ValueError(&#34;No appropriate databackend configured. &#34;)
 
@@ -69,37 +69,37 @@ appmodel = model()
 
 def get_model():
     return appmodel</code></pre>
-<p>As the package constructor shows, we have implemented a new <code>sqlite3</code> backend.  The code for the backend is in <code>model_sqlite3.py</code>.  The part that implements the DDL (Data Definition Language) is shown below.  As the code shows, the abstract base class <code>Model</code> is first imported along with the <code>sqlite3</code> package.  Then, the file storing the database (<code>entries.db</code>) is specified.  This file will be created in the directory that the web application is run from and will persist across invocations.  The model constructor then creates a connection to the file and attempts a query to see if the <code>guestbook</code> table exists in the file.  Upon receiving an error (which will be thrown if the table does not exist), it performs the SQL statement that creates the initial <code>guestbook</code> table along with its schema.</p>
+<p>As the package constructor shows, we have implemented a new <code>sqlite3</code> backend.  The code for the backend is in <code>model_sqlite3.py</code>.  The part that implements the DDL (Data Definition Language) is shown below.  As the code shows, the abstract base class <code>Model</code> is first imported along with the <code>sqlite3</code> package.  Then, the file storing the database (<code>guestbook.db</code>) is specified.  This file will be created in the directory that the web application is run from and will persist across invocations.  The model constructor then creates a connection to the file and attempts a query to see if the <code>entries</code> table exists in the file.  Upon receiving an error (which will be thrown if the table does not exist), it performs the SQL statement that creates the initial <code>entries</code> table along with its schema.</p>
 <h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/gbmodel/model_sqlite3.py" target="_blank">gbmodel/model_sqlite3.py</a></h3>
-<pre><code>from .Model import Model
+<pre><code>from .model import Model
 from datetime import datetime
 import sqlite3
-DB_FILE = &#39;entries.db&#39;    # file for our Database
+DB_FILE = &#39;guestbook.db&#39;    # file for our Database
 
-class model(Model):
+class ModelSqlite(Model):
     def __init__(self):
         # Make sure our database exists
         connection = sqlite3.connect(DB_FILE)
         cursor = connection.cursor()
         try:
-            cursor.execute(&#34;SELECT count(rowid) FROM guestbook&#34;)
+            cursor.execute(&#34;SELECT count(rowid) FROM entries&#34;)
         except sqlite3.OperationalError:
-            cursor.execute(&#34;create table guestbook (name text, email text, signed_on timestamp, message)&#34;)
+            cursor.execute(&#34;create table entries (name text, email text, signed_on timestamp, message text)&#34;)
         cursor.close()</code></pre>
-<p>The rest of the code in <code>model_sqlite3.py</code> implements the DML (Data Manipulation Language) part of the backend.  As the code shows, the <code>select()</code> method simply returns all rows from the guestbook table as a list of lists. We have to add a <a href="https://docs.python.org/3/library/sqlite3.html#default-adapters-and-converters" target="_blank">detect_types</a> argument to the connection for the timestamp to be converted back to a <code>datetime</code> object, otherwise it would be a <code>str</code>. </p>
-<p>The <code>insert()</code> method takes the <code>(name, email, message)</code> strings, then generates a timestamp (<code>datetime.now()</code>) before inserting them all into the <code>guestbook</code> table.</p>
+<p>The rest of the code in <code>model_sqlite3.py</code> implements the DML (Data Manipulation Language) part of the backend.  As the code shows, the <code>select()</code> method simply returns all rows from the entries table as a list of lists. We have to add a <a href="https://docs.python.org/3/library/sqlite3.html#default-adapters-and-converters" target="_blank">detect_types</a> argument to the connection for the timestamp to be converted back to a <code>datetime</code> object, otherwise it would be a <code>str</code>. </p>
+<p>The <code>insert()</code> method takes the <code>(name, email, message)</code> strings, then generates a timestamp (<code>datetime.now()</code>) before inserting them all into the <code>entries</code> table.</p>
 <h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/gbmodel/model_sqlite3.py" target="_blank">gbmodel/model_sqlite3.py</a></h3>
 <pre><code>   def select(self):
         connection = sqlite3.connect(DB_FILE, detect_types=sqlite3.PARSE_DECLTYPES)
         cursor = connection.cursor()
-        cursor.execute(&#34;SELECT * FROM guestbook&#34;)
+        cursor.execute(&#34;SELECT * FROM entries&#34;)
         return cursor.fetchall()
 
     def insert(self, name, email, message):
         params = {&#39;name&#39;:name, &#39;email&#39;:email, &#39;datetime&#39;:datetime.now(), &#39;message&#39;:message}
         connection = sqlite3.connect(DB_FILE)
         cursor = connection.cursor()
-        cursor.execute(&#34;INSERT INTO guestbook (name, email, signed_on, message) VALUES (:name, :email, :datetime, :message)&#34;, params)
+        cursor.execute(&#34;INSERT INTO entries (name, email, signed_on, message) VALUES (:name, :email, :datetime, :message)&#34;, params)
 
         connection.commit()
         cursor.close()
@@ -154,10 +154,14 @@ class Sign(MethodView):
 <pre>python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt</pre>
+<p>Or on windows with PowerShell</p>
+<pre>python -m venv env
+.\env\Scripts\Activate.ps1
+pip install -r requirements.txt</pre>
 <p>Then, start the server.</p>
 <pre>python app.py</pre>
-<p>Visit the site as before and add an entry that includes your PSU e-mail address in it and the message &#34;python/flask MVP sqlite3 #1&#34;.  Then, type &#34;<code>Ctrl+c</code>&#34; to stop the server.  Perform a directory listing to see that the sqlite3 database file <code>entries.db</code> has been created. </p>
-<p>Start the server again.  The original message should still appear as it has been read from the <code>entries.db</code> file.  Add another entry using your PSU e-mail address and the message &#34;python/flask MVP sqlite3 #2&#34;.  </p>
+<p>Visit the site as before and add an entry that includes your e-mail address in it and the message &#34;python/flask MVP sqlite3 #1&#34;.  Then, type &#34;<code>Ctrl+c</code>&#34; to stop the server.  Perform a directory listing to see that the sqlite3 database file <code>guestbook.db</code> has been created. </p>
+<p>Start the server again.  The original message should still appear as it has been read from the <code>guestbook.db</code> file.  Add another entry using your e-mail address and the message &#34;python/flask MVP sqlite3 #2&#34;.  </p>
 <ul>
 <li><strong>Take a screenshot of the resulting page for your lab notebook</strong></li>
 </ul>
@@ -176,9 +180,14 @@ pip install -r requirements.txt</pre>
 <li>vscode:extension/mtxr.sqltools-driver-sqlite</li>
 </ul>
 <h2 is-upgraded><strong>Command Line</strong></h2>
-<p>If you are using your own local Ubuntu VM, you can install the CLI by running the command: <code>sudo apt-get install sqlite3 libsqlite3-dev</code></p>
-<p>Bring up the entries.db database within sqlite3 via the following command:</p>
-<pre>sqlite3 entries.db</pre>
+<p>If you are using your own local Ubuntu VM, you can install the CLI by running the command: </p>
+<pre>sudo apt-get install sqlite3 libsqlite3-dev</pre>
+<p>On windows you can install it with</p>
+<pre>winget install SQLite -e</pre>
+<aside class="warning"><p><strong>Warning:</strong> Do not forget to restart your shell for the command to be available!</p>
+</aside>
+<p>Bring up the guestbook.db database within sqlite3 via the following command. (You must be in the correct folder):</p>
+<pre>sqlite3 guestbook.db</pre>
 <p><strong>Then, within the sqlite client, perform the following commands and take a screenshot of their output to include in your lab notebook. </strong></p>
 <ul>
 <li>List the tables in the database and note the table name</li>

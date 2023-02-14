@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2023-02-06T20:20:59Z",
+  "updated": "2023-02-14T20:13:04Z",
   "id": "modules-sqlite-guestbook",
   "duration": 27,
   "title": "Modules sqlite3 Guestbook",
@@ -21,6 +21,6 @@
   "tags": [
     "cloud"
   ],
-  "feedback": "https://docs.google.com/document/d/1soKLnsCqVP8N2y-nKl6FQVc1Kjs2QErcYGNTuZ5TqYI",
+  "feedback": "https://docs.google.com/document/d/1soKLnsCqVP8N2y-nKl6FQVc1Kjs2QErcYGNTuZ5TqYI/edit",
   "url": "modules-sqlite-guestbook"
 }
