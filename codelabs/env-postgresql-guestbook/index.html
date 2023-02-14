@@ -1,0 +1,213 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Env PostgreSQL Guestbook</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="env-postgresql-guestbook"
+                  title="Env PostgreSQL Guestbook"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/1kxuM-qx7LM0Xi2jlnfvWHQsnMG7JphSMJAOR6w1YBvQ/edit">
+    
+      <google-codelab-step label="PostgreSQL" duration="2">
+        <p class="image-container"><img style="width: 624.00px" src="img/7293e2edea562642.png"></p>
+<p>The previous version of the Guestbook stores the model data in a sqlite3 database. This version provides a new modularized version od the model adapter to support querying a PostgreSQL server. To view the code, change into its directory within the repository.</p>
+<pre>cd guestbook-src/02_mvp_modules_sqlite3</pre>
+<p>The directory structure shown below shows only the files of interest for this lab.  There is a <code>.env.sample</code> file which will help with configuring the environment variables for the database connection. In addition, in <code>gbmodel</code> directory there is a new postgresql implemetnation (<code>model_sql_postgres.py</code>), which has to be enabled in the initialization file for the package (<code>__init__.py</code>)</p>
+<pre>02_mvp_modules_sqlite3
+├── gbmodel
+│   ├── __init__.py
+│   └── model_sql_postgres.py
+└── .env.sample</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="CloudSQL / PostgreSQL server" duration="0">
+        <p>Use Google CloudSQL to create a postgresql instance to which we will connect with Python.</p>
+<p>Either use your Google Cloud account or a test instance via the following</p>
+<p><a href="https://www.cloudskillsboost.google/focuses/2802?catalog_rank=%7B%22rank%22%3A1%2C%22num_filters%22%3A2%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=22153737" target="_blank"><paper-button class="colored" raised>Cloudskill Lab CloudSQL</paper-button></a></p>
+<p>You can follow the Lab and still have time remaining to do the tests with PostgreSQL. It is recommended to start instant creation at the beginning since it can take 5-10 minutes.</p>
+<h2 is-upgraded><strong>1. Go to the CloudSQL Service Page</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/c3ab80309bf44a29.png"></p>
+<h2 is-upgraded><strong>2. Create a PostgreSQL instance</strong></h2>
+<p>Create a unique instance-name, generate a password <strong>AND REMEMBER IT</strong>. (If you are on your own account you can reduce cost by setting Developement and Single zone)</p>
+<p class="image-container"><img style="width: 624.00px" src="img/59adee8aaf5c510c.png"></p>
+<h2 is-upgraded><strong>3 Create a User</strong></h2>
+<p>Once the instance is created we can add another user.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/717ffc2ee4df0aec.png"></p>
+<p>This will be the user and password we will provide python to connect</p>
+<aside class="special"><p><strong>Tip: </strong>All users you create using Cloud SQL are created as part of the cloudsqlsuperuser role, and have the same set of attributes as the postgres user: CREATEROLE, CREATEDB, and LOGIN. You can change the attributes of any user by using the ALTER ROLE command.</p>
+<p><a href="https://cloud.google.com/sql/docs/postgres/users" target="_blank">https://cloud.google.com/sql/docs/postgres/users</a></p>
+<p>In a real production environment we should limit the permissions of this user.</p>
+</aside>
+<h2 is-upgraded><strong>4 Create a database</strong></h2>
+<p>Use the same name as for the user.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/bb72e81051d7593f.png"></p>
+<h2 is-upgraded><strong>5 Allow connection from an external ip</strong></h2>
+<p>Use a service like <a href="https://ifconfig.me/" target="_blank">https://ifconfig.me/</a> to get your public ip and add it to the authorised networks.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/6d24ce546881ed21.png"></p>
+<h2 is-upgraded><strong>6 Get server address</strong></h2>
+<p>Copy the public ip address of your server instance</p>
+<p class="image-container"><img style="width: 624.00px" src="img/db056f88570ef82d.png"></p>
+<p>You now have all the information to connect from an external program like Python.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="PostgreSQL from Python" duration="0">
+        <p>We will setup the changes required to connect to a PostgreSQL server instead of a local  <code>sqlite3</code> database. </p>
+<p>Edit <code>__init__.py</code> to use the PostgreSQL backend by setting the correct value in the mode_backend.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/gbmodel/__init__.py" target="_blank">gbmodel/__init__.py</a></h3>
+<pre><code># model_backend = &#39;sqlite3&#39;
+model_backend = &#39;postgres&#39;
+# model_backend = &#39;pylist&#39;</code></pre>
+<p>As the package constructor shows, we have implemented a new <code>postgres</code> backend.  The code for the backend is in <code>model_sql_postgres.py</code>.  The part that implements the DDL (Data Definition Language) is shown below.  As the code shows, the abstract base class <code>Model</code> is first imported along with the <code>psycopg</code> package.  There is no variable for a file name. Instead, it was replaced by the creation of the database connection string, which is assembled by loading information from environment variables. We are using the <code>dotenv</code> package, to simplify loading environment variables from a <code>.env</code> file. If you compare the code with the sqlite3 version you will notice that this version uses the Python with statement that allows to not explicitly call the close cursor and close connection methods, as the with block will do it for us. Additionally, we had to add a <code>connection.rollback()</code> in the except code, before being able to add a change in the current transactions. PostgreSQL supports transactions even for DDL.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/gbmodel/model_sql_postgres.py" target="_blank">gbmodel/model_sql_postgres.py</a></h3>
+<pre><code>from datetime import datetime
+from .model import Model
+import psycopg
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+DB_CONNECTION = &#34;host=%s port=%s dbname=%s user=%s password=%s&#34; % (os.getenv(&#39;DB_HOST&#39;), os.getenv(&#39;DB_PORT&#39;), os.getenv(&#39;DB_NAME&#39;), os.getenv(&#39;DB_USER&#39;), os.getenv(&#39;DB_PASS&#39;))
+
+class ModelSqlPostgres(Model):
+    def __init__(self):
+        # Make sure our database exists
+        with psycopg.connect(DB_CONNECTION) as connection:
+            with connection.cursor() as cursor:
+                try:
+                    cursor.execute(&#34;SELECT count(*) FROM entries&#34;)
+                except psycopg.errors.UndefinedTable:
+                    connection.rollback()
+                    cursor.execute(&#34;CREATE TABLE entries (id serial, name text, email text, signed_on timestamp, message text)&#34;)
+                    connection.commit()</code></pre>
+<p>You need to create the .env file and configure the correct information. Copy the .env.sample to .env and provide the correct information.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/.env.sample" target="_blank">.env</a></h3>
+<pre><code>DB_HOST=localhost
+DB_PORT=5432 # Default PostgreSQL port
+DB_NAME=guestbook
+DB_USER=guestbook
+DB_PASS=guestbook</code></pre>
+<p>The rest of the code in <code>model_sql_postgres.py</code> implements the DML (Data Manipulation Language) part of the backend.  As the code shows, the <code>select()</code> method simply returns all rows from the entries table as a list of lists. We had to add an id column, to have a primary key. The  <code>datetime</code> object conversion is done automatically as long as the type of data is <code>timestamp.</code></p>
+<p>The <code>insert()</code> method takes the <code>(name, email, message)</code> strings, then generates a timestamp (<code>datetime.now()</code>) before inserting them all into the <code>entries</code> table.</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/gbmodel/model_sql_postgres.py" target="_blank">gbmodel/model_sql_postgres.py</a></h3>
+<pre><code>    def select(self):
+        &#34;&#34;&#34;
+        Gets all rows from the database
+        Each row contains: name, email, signed_on, message, id
+        :return: List of lists containing all rows of database
+        &#34;&#34;&#34;
+        with psycopg.connect(DB_CONNECTION) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(&#34;SELECT name, email, signed_on, message, id FROM entries&#34;)
+                return cursor.fetchall()
+
+    def insert(self, name, email, message):
+        &#34;&#34;&#34;
+        Inserts entry into database
+        :param name: String
+        :param email: String
+        :param message: String
+        :return: True
+        :raises: Database errors on connection and insertion
+        &#34;&#34;&#34;
+        params = {&#39;name&#39;:name, &#39;email&#39;:email, &#39;datetime&#39;:datetime.now(), &#39;message&#39;:message}
+        with psycopg.connect(DB_CONNECTION) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(&#34;INSERT INTO entries (name, email, signed_on, message) VALUES (%(name)s, %(email)s, %(datetime)s, %(message)s)&#34;, params)
+                connection.commit()
+        return True
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Running the code" duration="5">
+        <p>Log back into a linuxlab machine or your local Ubuntu VM that you are running the web application on.  Change into the repository that contains the code.</p>
+<pre>cd guestbook-src/02_mvp_modules_sqlite3</pre>
+<p>As before, create a Python 3 virtual environment and install the packages specified in <code>requirements.txt</code> (e.g. <code>flask</code>)</p>
+<p>We have two additional requirements in order for postgresql to work with python</p>
+<h3 is-upgraded><a href="https://github.com/bfritscher/guestbook-src/blob/main/02_mvp_modules_sqlite3/requirements.txt" target="_blank">requirements.txt</a></h3>
+<pre><code>psycopg[binary] # library to connect to postgresql
+python-dotenv # top simplify loading of environment variables from .env files</code></pre>
+<pre>python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt</pre>
+<p>Or on windows with PowerShell</p>
+<pre>python -m venv env
+.\env\Scripts\Activate.ps1
+pip install -r requirements.txt</pre>
+<p>Then, start the server.</p>
+<pre>python app.py</pre>
+<p>Visit the site as before and add an entry that includes your email address in it and the message &#34;python/flask MVP PostgreSQL#1&#34;.  Then, type &#34;<code>Ctrl+c</code>&#34; to stop the server.</p>
+<p>Start the server again.  The original message should still appear as it has been read from the database server.  Add another entry using your email address and the message &#34;python/flask MVP PostgreSQL#2&#34;.  </p>
+<ul>
+<li><strong>Take a screenshot of the resulting page for your lab notebook</strong></li>
+</ul>
+<p>Then, type &#34;<code>Ctrl+c</code>&#34; to stop the server again.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="PostgreSQL via Cloud Shell" duration="5">
+        <p>To explore the content of the database you can connect with a Database Tool, or directly use the cloud shell.</p>
+<h2 is-upgraded><strong>1 Open Cloud Shell</strong><img style="width: 624.00px" src="img/f2df636bf1002553.png"></h2>
+<h2 is-upgraded><strong>2 Connect to CloudSQL</strong></h2>
+<p>Specify your created username</p>
+<pre><code>gcloud sql connect guestbook-pg --user=guestbook --quiet</code></pre>
+<h2 is-upgraded><strong>3 Explore Data</strong></h2>
+<p>It is important to not forget the <code>;</code> at the end of an SQL statement.</p>
+<pre><code>guestbook=&gt; SELECT * FROM entries;</code></pre>
+<h2 is-upgraded><strong>4 Add new Data</strong></h2>
+<p>Adapt to your information</p>
+<pre><code>guestbook=&gt; INSERT INTO entries (name, email, signed_on, message) VALUES (&#39;Demo&#39;, &#39;demo@example.com&#39;, now(), &#39;hello from console&#39;);</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Cleanup" duration="5">
+        <aside class="warning"><p><strong>Remember:</strong> Cloud SQL uses an <code>n1-standard-1</code> machine by default. If you keep the CloudSQL instance running it will cost a lot of money!</p>
+</aside>
+<h2 is-upgraded>If you created the instance in your own account, here are the steps to delete it</h2>
+<p><strong>1 Remove deletion protection</strong></p>
+<p class="image-container"><img style="width: 624.00px" src="img/45d2f008da9fad1c.png"></p>
+<p><strong>2 Delete and confirm</strong></p>
+<p>On the main SQL overview page</p>
+<p class="image-container"><img style="width: 568.00px" src="img/397d99f1dece5948.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/c032444c400165e1.png"></p>
+<p>Done!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

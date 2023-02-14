@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-14T21:49:09Z",
+  "id": "env-postgresql-guestbook",
+  "duration": 17,
+  "title": "Env PostgreSQL Guestbook",
+  "authors": "Wu-chang Feng, Boris Fritscher",
+  "summary": "Run a simple web application using Python and Flask with a PostgreSQL backend",
+  "source": "1kxuM-qx7LM0Xi2jlnfvWHQsnMG7JphSMJAOR6w1YBvQ",
+  "theme": "python",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "python",
+    "cloud-data",
+    "guestbook"
+  ],
+  "tags": [
+    "cloud"
+  ],
+  "feedback": "https://docs.google.com/document/d/1kxuM-qx7LM0Xi2jlnfvWHQsnMG7JphSMJAOR6w1YBvQ/edit",
+  "url": "env-postgresql-guestbook"
+}
