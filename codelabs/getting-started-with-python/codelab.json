@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2023-02-03T23:39:16Z",
+  "updated": "2023-02-04T10:24:47Z",
   "id": "getting-started-with-python",
   "duration": 0,
   "title": "Getting Started with Python",
@@ -20,5 +20,6 @@
   "tags": [
     "cloud"
   ],
+  "feedback": "https://docs.google.com/document/d/1imqbI5ARA6eXm7psxA8HPf5mXQhWIqFGbsYgLs9vuOo",
   "url": "getting-started-with-python"
 }

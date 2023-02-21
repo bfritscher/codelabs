@@ -9,7 +9,7 @@
   "title": "Deploying a Vue.js Project on GitHub Pages",
   "authors": "Boris Fritscher",
   "summary": "Deploying a Vue.js Project on GitHub",
-  "source": "",
+  "source": "vue-github-deploy.md",
   "theme": "",
   "status": [
     "published"

@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2023-02-10T20:20:41Z",
+  "updated": "2023-02-17T13:51:20Z",
   "id": "introduction-to-django-and-drf",
   "duration": 0,
   "title": "Introduction to Django and Django REST Framework",
@@ -21,6 +21,6 @@
   "tags": [
     "interschool"
   ],
-  "feedback": "https://docs.google.com/document/d/19UBl3yS10p8lkptdc4sPhPBMiBlt7-swq142aowTt6Q",
+  "feedback": "https://docs.google.com/document/d/19UBl3yS10p8lkptdc4sPhPBMiBlt7-swq142aowTt6Q/edit?usp=sharing\u0026resourcekey=0-RZLjgUboUX0WcJP16kv9sQ",
   "url": "introduction-to-django-and-drf"
 }

@@ -18,14 +18,26 @@
       color: red;
     }
   </style>
+  <script defer data-domain="learn.fritscher.ch" data-api="https://fritscher.ch/s/api/event" src="https://fritscher.ch/s/js/script.hash.outbound-links.js"></script>
+  <script>
+    const originalReplaceState = history.replaceState;
+    if (originalReplaceState) {
+        window.history.replaceState = function (data, title, url) {
+            originalReplaceState.apply(this, [data, title, url]);
+            if (window.plausible) {
+                window.plausible('pageview');
+            }
+        }
+    }
+  </script>
 </head>
 <body>
-  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  
   <google-codelab codelab-gaid=""
                   id="introduction-to-django-and-drf"
                   title="Introduction to Django and Django REST Framework"
                   environment="web"
-                  feedback-link="https://docs.google.com/document/d/19UBl3yS10p8lkptdc4sPhPBMiBlt7-swq142aowTt6Q">
+                  feedback-link="https://docs.google.com/document/d/19UBl3yS10p8lkptdc4sPhPBMiBlt7-swq142aowTt6Q/edit?usp=sharing&amp;resourcekey=0-RZLjgUboUX0WcJP16kv9sQ">
     
       <google-codelab-step label="Introduction" duration="0">
         <p><strong>Last Updated:</strong> 2023-02-10</p>
@@ -199,7 +211,6 @@
   <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
   <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
   <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
-  <script src="//support.google.com/inapp/api.js"></script>
 
 </body>
 </html>
