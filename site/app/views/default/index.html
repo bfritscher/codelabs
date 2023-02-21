@@ -17,18 +17,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="generator" content="{{view.title}}">
   <meta name="application-name" content="{{view.title}}">
   <link rel="canonical" href="{{canonicalViewUrl(view)}}" />
-  <link rel="preconnect" href="https://www.google-analytics.com" />
 
+  <script defer data-domain="learn.fritscher.ch" data-api="https://fritscher.ch/s/api/event" src="https://fritscher.ch/s/js/script.hash.outbound-links.js"></script>
   <script>
-    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-    ga('create', '{{ga}}', 'auto');
-    ga('send', 'pageview');
-    {% if view.ga %}
-    ga('create', '{{view.ga}}', 'auto', { name: 'view' });
-    ga('view.send', 'pageview');
-    {% endif %}
+    const originalReplaceState = history.replaceState;
+    if (originalReplaceState) {
+        window.history.replaceState = function (data, title, url) {
+            originalReplaceState.apply(this, [data, title, url]);
+            if (window.plausible) {
+                window.plausible('pageview');
+            }
+        }
+    }
   </script>
-  <script async src='https://www.google-analytics.com/analytics.js'></script>
 
   <title>{{view.title}}</title>
 
