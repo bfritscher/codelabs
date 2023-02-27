@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-27T22:01:11Z",
+  "id": "getting-started-with-ssh",
+  "duration": 0,
+  "title": "Getting Started with SSH",
+  "authors": "Boris Fritscher",
+  "summary": "In this codelab, you'll learn to use SSH to connect to remote machines and generate your own key pair.",
+  "source": "1ci1SNRYhqe8_ukLie9fj8CekiYplloqKLFqrje0h1Tc",
+  "theme": "vm",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vm",
+    "openstack",
+    "cloud-compute-engine"
+  ],
+  "tags": [
+    "cloud"
+  ],
+  "feedback": "https://docs.google.com/document/d/1ci1SNRYhqe8_ukLie9fj8CekiYplloqKLFqrje0h1Tc/edit?usp=sharing",
+  "url": "getting-started-with-ssh"
+}

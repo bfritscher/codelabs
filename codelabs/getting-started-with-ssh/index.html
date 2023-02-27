@@ -1,0 +1,185 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Getting Started with SSH</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+  <script defer data-domain="learn.fritscher.ch" data-api="https://fritscher.ch/s/api/event" src="https://fritscher.ch/s/js/script.hash.outbound-links.js"></script>
+  <script>
+    const originalReplaceState = history.replaceState;
+    if (originalReplaceState) {
+        window.history.replaceState = function (data, title, url) {
+            originalReplaceState.apply(this, [data, title, url]);
+            if (window.plausible) {
+                window.plausible('pageview');
+            }
+        }
+    }
+  </script>
+</head>
+<body>
+  
+  <google-codelab codelab-gaid=""
+                  id="getting-started-with-ssh"
+                  title="Getting Started with SSH"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/1ci1SNRYhqe8_ukLie9fj8CekiYplloqKLFqrje0h1Tc/edit?usp=sharing">
+    
+      <google-codelab-step label="Install SSH Server" duration="0">
+        <p>You&#39;ll learn how to configure SSH access to your Virtual Machine and set up password-less login.</p>
+<h2 is-upgraded><strong>Log in to the virtual machine and install ssh server software:</strong></h2>
+<pre>$ sudo apt-get install openssh-server</pre>
+<aside class="special"><p><strong>Note:</strong> If you do not have a Debian or Ubuntu Virtual Machine, first follow the Getting Started with a Virtual Machine lab. A network between the host computer and the virtual machine is also assumed.</p>
+</aside>
+<h2 is-upgraded><strong>Get your ip address with </strong></h2>
+<pre>$ ip address</pre>
+<h2 is-upgraded><strong>You can now connect from another machine or your host computer:</strong></h2>
+<pre>$ ssh debian@&lt;remote_host&gt; </pre>
+<p>Replace <code><remote_host></code> with the external ip from your virtual machine.</p>
+<p>Windows has a built-in SSH client that you can use in Windows Terminal.</p>
+<p>You can check that it is installed in Windows Settings &gt; Apps &gt; Optional features, then search for &#34;OpenSSH&#34; in your installed features.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/f626912c0b30b282.png"></p>
+<p>On GNU/Linux Debian you can install the client with</p>
+<pre>$ sudo apt-get install openssh-client</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="SSH Keys" duration="0">
+        <p>We are going to generate a SSH key pair, which will allow us to connect without a password.</p>
+<h2 is-upgraded><strong>Create key</strong></h2>
+<p>On your host (windows) or in another vm generate your key pair.</p>
+<pre>PS&gt; ssh-keygen -t ed25519</pre>
+<h2 is-upgraded><strong>Upload key to vm</strong></h2>
+<p>On windows you can use this trick</p>
+<pre>PS&gt; type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh debian@&lt;remote_host&gt; &#34;cat &gt;&gt; .ssh/authorized_keys&#34;</pre>
+<p>On GNU/Linux</p>
+<pre>$ ssh-copy-id debian@&lt;remote_host&gt;</pre>
+<h2 is-upgraded><strong>Connect without password</strong></h2>
+<pre>PS&gt; ssh debian@&lt;remote_host&gt;</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Port Forwarding" duration="0">
+        <aside class="special"><p><strong>Note:</strong> It is assumed that you have a running PostgreSQL server on your virtual machine.</p>
+</aside>
+<p>We want to connect to the Database Server from a Tool on our host machine. However, by default you cannot connect directly to a PostgreSQL server from an external connection. They are disabled by in  <code>pg_hba.conf</code> (more on this in another lab).</p>
+<h2 is-upgraded><strong>Connect via SSH port forwarding</strong></h2>
+<p>Before connecting you can specify a local port which will be mapped to a remote host and ip. Lets redirect traffic from the host DB port to the localhost DB port inside the virtual machine.</p>
+<pre>PS&gt; ssh -L 5432:127.0.0.1:5432 debian@&lt;remote_host&gt;</pre>
+<h2 is-upgraded><strong>Test the connection</strong></h2>
+<p>Use VScode <a href="https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools" target="_blank">SQLTools</a> with <a href="https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools-driver-pg" target="_blank">PostgreSQL drivers</a> to connect to the database:</p>
+<p><em>Adapt the credentials according to your setting</em></p>
+<p class="image-container"><img style="width: 624.00px" src="img/228271a2a07f1be1.png"></p>
+<p>You can then explore the database.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/16ef6110ba0c35b3.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="SSH Keys with GitHub" duration="0">
+        <p>You can use your new SSH key to authenticate with GitHub and remove the need to enter your password for every git clone, pull or push action.</p>
+<h2 is-upgraded><strong>Add key to your Account</strong></h2>
+<p><a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account" target="_blank"><paper-button class="colored" raised>Follow the official tutorial</paper-button></a></p>
+<h2 is-upgraded><strong>Test your key</strong></h2>
+<p>Git clone a repository with the git/ssh url: <code>git@github.com:heg-web/[algopy-...].git</code></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="SSH Keys with Switch Engine" duration="0">
+        <p class="image-container"><img style="width: 108.00px" src="img/3beab74b3a392d69.png"></p>
+<p>We are going to create a new virtual machine on a cloud provider. In modern cloud infrastructure, login is mostly done via SSH keys. The key is directly added to the virtual machine at creation and allows login without ever setting a password.</p>
+<h2 is-upgraded><strong>Add key to Switch Engines</strong></h2>
+<ol type="1" start="1">
+<li>Login with your edu-id account on <a href="https://engines.switch.ch/horizon/quickstart/#/" target="_blank">https://engines.switch.ch/horizon/quickstart/#/</a></li>
+<li>Switch Region to LS (on the top)</li>
+<li>Go to <code>Project > Compute > Key Pairs</code> and click <code>Import Public Key</code></li>
+</ol>
+<aside class="warning"><p><strong>Important:</strong> You only provide your <strong>PUBLIC</strong> key (file ending in .pub). The private key <strong>must</strong> be kept on your system only!</p>
+</aside>
+<aside class="special"><p><strong>Need more?</strong> Checkout the official switch engine documentation: <a href="https://help.switch.ch/de/engines/documentation/creating---importing-ssh-keys/?sbquery=click%20call" target="_blank">ssh-key</a> and <a href="https://help.switch.ch/engines/documentation/start-virtual-machines/" target="_blank">virtual machines</a></p>
+</aside>
+<h2 is-upgraded>Create your first virtual machine on switch engine</h2>
+<p>Use <code>Quickstart > Instances > Create Instance</code></p>
+<p>Create a simple virtual machine with the following options:</p>
+<pre><code>OS: Debian 11
+CPU: 2 
+Ram: 2GB 
+Volume: 10GB / Standard
+SSH Keypairs: your imported key</code></pre>
+<h2 is-upgraded>Connect to your new virtual machine</h2>
+<p>Use the displayed external ip to connect to your new machine from your host.</p>
+<pre>PS&gt; ssh debian@&lt;remote_host&gt;</pre>
+<p>Run the lscpu command</p>
+<pre>$ lscpu</pre>
+<p><em>What is the Hypervisor used on this platform ?</em></p>
+<p>Go into the switch engine instances and look at your virtual machines&#39; advanced  settings.</p>
+<p><em>Which security Groups are applied?</em></p>
+<aside class="warning"><p><strong>Shutdown or Delete your instance when your no longer need it</strong></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="SSH Keys on Google Compute Engine" duration="0">
+        <p>We are going to test creating a virtual machine on Google Cloud.</p>
+<ol type="1" start="1">
+<li>Login to the <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
+<li>If it&#39;s your first time create a project and enable compute api. You can follow this tutorial: <a href="https://cloud.google.com/compute/docs/create-linux-vm-instance" target="_blank">Create a Linux VM instance in Compute Engine</a></li>
+<li>You should create a <strong>e2-micro</strong> instance in<strong> us-east</strong> region of your choice</li>
+<li>Edit the virtual machine options to add your <strong>PUBLIC</strong> SSH Key. After saving check the username linked to your key in the same place.</li>
+<li>Get the public ip address</li>
+</ol>
+<p>You can now connect with</p>
+<pre>PS&gt; ssh &lt;username&gt;@&lt;remote_host&gt;</pre>
+<p>Run the lscpu command</p>
+<pre>$ lscpu</pre>
+<p><em>What is the Hypervisor used on this platform ?</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Dynamic Port Forwarding" duration="0">
+        <p>As we have a virtual machine located in the US region we will try SSH Socks forwarding.</p>
+<p>Reconnect via ssh but with Dynamic Port Forwarding</p>
+<pre>PS&gt; ssh -D 7777 &lt;username&gt;@&lt;remote_host&gt;</pre>
+<p>Use  this  socks proxy <code>127.0.0.1:7777</code> with one of your browsers.</p>
+<p>For example in Firefox:</p>
+<p class="image-container"><img style="width: 624.00px" src="img/f9ec0a2ae03eac8a.png"></p>
+<h2 is-upgraded>Where are we?</h2>
+<p>Now go to <a href="https://whatismyipaddress.com/" target="_blank">https://whatismyipaddress.com/</a></p>
+<p>Try to play a video from <a href="https://www.rts.ch/" target="_blank">https://www.rts.ch/</a> </p>
+<p><em>Does it work?</em></p>
+<aside class="warning"><p><strong>Delete your instance to save your credits!</strong></p>
+</aside>
+<aside class="special"><p><strong>Want more:</strong> Try to create a Virtual Machine on Microsoft Azure with your <a href="https://azure.microsoft.com/en-us/free/students/" target="_blank">free student account</a>. Or try it on Amazon AWS (<a href="https://aws.amazon.com/free/" target="_blank">free tier</a>, but credit card required)</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+
+</body>
+</html>
