@@ -1,0 +1,169 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Getting Started with Virtual Machine on Desktop</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+  <script defer data-domain="learn.fritscher.ch" data-api="https://fritscher.ch/s/api/event" src="https://fritscher.ch/s/js/script.hash.outbound-links.js"></script>
+  <script>
+    const originalReplaceState = history.replaceState;
+    if (originalReplaceState) {
+        window.history.replaceState = function (data, title, url) {
+            originalReplaceState.apply(this, [data, title, url]);
+            if (window.plausible) {
+                window.plausible('pageview');
+            }
+        }
+    }
+  </script>
+</head>
+<body>
+  
+  <google-codelab codelab-gaid=""
+                  id="getting-started-with-vm-desktop"
+                  title="Getting Started with Virtual Machine on Desktop"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/1AoSePhyvxkQjMOkRvkSaW30ZrhDgPqWQX1c-rvk2mig/edit?usp=sharing&amp;resourcekey=0-Acgbp-ONpcZ6OK9cvoAnAw">
+    
+      <google-codelab-step label="Install an Operating System" duration="10">
+        <p>We are going to install a GNU/Linux based operating system in a virtual machine.</p>
+<h2 is-upgraded><strong>Install a virtual machine software. </strong></h2>
+<p><a href="https://www.virtualbox.org/" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download VirtualBox</paper-button></a></p>
+<aside class="special"><p><strong>Note:</strong> You can also use VMware Workstation or Hyper-V although they share many similarities not all features are identical.</p>
+</aside>
+<h2 is-upgraded><strong>Download the installation media</strong></h2>
+<p>We are going to install Debian as it is small and stable.</p>
+<p><a href="https://www.debian.org/download" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download the latest Debian netinst version</paper-button></a></p>
+<h2 is-upgraded><strong>Install Debian</strong></h2>
+<p>Use this ISO image as installation medium in virtual box (like a virtual CD). Your empty machine will boot on it and start the installation wizard.</p>
+<aside class="special"><p><strong>Note:</strong> This first time,  <strong>disable any unattended installation assistant</strong>.</p>
+</aside>
+<p>Follow the prompts or get help from a more detailed tutorial.</p>
+<p>Root password  and user password <strong>must not be the same!</strong></p>
+<p>Some options you will need to set:</p>
+<pre><code>Keyboard:             swiss french
+Hostname:             debian
+Domain:               lab.local
+User Account:         debian
+Partition Disk:       use entier disk / all files in one partition
+Desktop Environment:  optional, we only require a shell.</code></pre>
+<p>Once successfully booted and logged in continue.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Experiment with Snapshots" duration="0">
+        <p>We will test the power of snapshots which are like save games in a video game or previous verision of documents in Word, but for a full machine.</p>
+<h2 is-upgraded><strong>Create a snapshot / checkpoint </strong><strong> in your virtualization software.</strong></h2>
+<aside class="warning"><p><strong>WARNING:</strong> Be sure that the snapshot / checkpoint worked before proceeding!</p>
+</aside>
+<h2 is-upgraded><strong>Experiment</strong></h2>
+<p>Now let&#39;s have some fun inside your VM.</p>
+<p>Open a terminal window <strong>inside</strong> your VM or connect directly to the shell if no desktop environment</p>
+<p>Become root and provide root password</p>
+<pre>$ su -</pre>
+<p>Be destructif</p>
+<pre>$ cd /
+$ rm -rf *</pre>
+<p>What happened? ☠️</p>
+<h2 is-upgraded><strong>Restore Snapshot</strong></h2>
+<p>And like that we are back running without losing anything!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup Sudoers" duration="0">
+        <p>In order to not share the root password, but still allow user to execute privileged commands we will use sudo.</p>
+<p>Let&#39;s add our debian user to sudoers.</p>
+<p>This can be done by adding him to the sudo group. We first need to use root account and password one last time to do this.</p>
+<pre>$ su -
+$ usermod -aG sudo username
+$ exit</pre>
+<p>For this to take effect we need a new login session. We can then verify that we are debian user and have the sudo group in our groups</p>
+<pre>$ su - debian
+$ whoami
+$ groups</pre>
+<p>Lets test our sudo privileges.</p>
+<pre>$ sudo whoami</pre>
+<p>What is the answer?</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Guestbook App" duration="0">
+        <p>We will install our guestbook app on this virtual machine.</p>
+<h2 is-upgraded><strong>Install Python</strong></h2>
+<p>First update package dependencies and install python3 and git.</p>
+<pre>$ sudo apt-get update
+$ sudo apt-get install python3 python3-pip python3-venv git</pre>
+<h2 is-upgraded><strong>Install Guestbook</strong></h2>
+<p>You will now need to install the guestbook app as you have done previously on your own machine. Clone the repository, create the virtual environment, install python dependencies. </p>
+<p>Refer to your notes or previous codelab!</p>
+<pre>$ git clone https://github.com/bfritscher/guestbook-src.git</pre>
+<aside class="special"><p><strong>Note:</strong> We are on GNU/Linux Debian so you will need to use <strong>python3 </strong> as executable and <strong>source </strong> to activate venv. Use the <strong>02_mvp_modules_sqlite3 </strong>version.</p>
+</aside>
+<p>Once Flask is started it will display the external ip:port on which you can connect from your host machine.</p>
+<aside class="warning"><p><strong>Hint:</strong> If you did not configure a shared network with your host, you will need to do so.</p>
+<p>You can check your virtual machine&#39;s addresses with: <code>ip address</code> command.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install Database" duration="0">
+        <p>We will switch to a PostgreSQL database backend.</p>
+<h2 is-upgraded><strong>Install PostgreSQL</strong></h2>
+<pre>$ sudo apt-get install postgresql postgresql-client</pre>
+<p>By default postgresql is only accessible with the postgres user account and locally.</p>
+<p>Let&#39;s connect to it and create a database and a dedicated user for our guestbook.</p>
+<p>We will use <code>psql</code> client program to interact with the database and send SQL commands.</p>
+<pre>$ sudo -u postgres psql
+postgres=# create database guestbook;
+postgres=# create user guestbook with encrypted password &#39;mypass&#39;;
+postgres=# grant all privileges on database guestbook to guestbook;
+postgres=# \q</pre>
+<aside class="warning"><p><strong>Hint:</strong> SQL instructions need to end with a semi-colon!</p>
+</aside>
+<h2 is-upgraded><strong>Test Guestbook</strong></h2>
+<p>Switch the guestbook app to the PostgreSQL backend by changing <code>gbmodel/__init__.py</code> and by creating a <code>.env</code> file with the correct connection information.</p>
+<p>Restart the application and test again.</p>
+<p>Do the entries persist refresh?</p>
+<h2 is-upgraded>Verify database </h2>
+<p>After entering some guestbook entries lets look for them in the database.</p>
+<p>Reconnect to postgres</p>
+<p>Switch database and perform SQL queries</p>
+<aside class="special"><p><strong>Note:</strong> \d command in psql will describe object like in Oracle with DESCRIBE</p>
+</aside>
+<pre>$ sudo -u postgres psql
+postgres=# \c guestbook
+postgres=# \d
+postgres=# YOUR SQL QUERY HERE;</pre>
+<p>What is the SQL query to display all rows from <code>entries</code> table?</p>
+<p>You now have a dedicated machine for your guestbook application with a database.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+
+</body>
+</html>

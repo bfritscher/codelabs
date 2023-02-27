@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-27T16:27:45Z",
+  "id": "getting-started-with-vm-desktop",
+  "duration": 10,
+  "title": "Getting Started with Virtual Machine on Desktop",
+  "authors": "Boris Fritscher",
+  "summary": "In this codelab, you'll setup a virtual machine and install the guestbook app on it.",
+  "source": "1AoSePhyvxkQjMOkRvkSaW30ZrhDgPqWQX1c-rvk2mig",
+  "theme": "vm",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vm",
+    "sql"
+  ],
+  "tags": [
+    "cloud"
+  ],
+  "feedback": "https://docs.google.com/document/d/1AoSePhyvxkQjMOkRvkSaW30ZrhDgPqWQX1c-rvk2mig/edit?usp=sharing\u0026resourcekey=0-Acgbp-ONpcZ6OK9cvoAnAw",
+  "url": "getting-started-with-vm-desktop"
+}
