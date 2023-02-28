@@ -1,0 +1,242 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Production Ready Guestbook on a VM with SSL</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+  <script defer data-domain="learn.fritscher.ch" data-api="https://fritscher.ch/s/api/event" src="https://fritscher.ch/s/js/script.hash.outbound-links.js"></script>
+  <script>
+    const originalReplaceState = history.replaceState;
+    if (originalReplaceState) {
+        window.history.replaceState = function (data, title, url) {
+            originalReplaceState.apply(this, [data, title, url]);
+            if (window.plausible) {
+                window.plausible('pageview');
+            }
+        }
+    }
+  </script>
+</head>
+<body>
+  
+  <google-codelab codelab-gaid=""
+                  id="nginx-ssl-gunicorn-manual"
+                  title="Production Ready Guestbook on a VM with SSL"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/1ZnedfbXuHABnBOH5qvxm2RzdxSGrASX3t76-apECpFU/edit?usp=sharing">
+    
+      <google-codelab-step label="Introduction" duration="0">
+        <p>We are going to deploy our guestbook to a production environment.</p>
+<p>For this we requirement some additional components:</p>
+<ol type="1" start="1">
+<li><strong>Nginx</strong> a performant static web server and reverse proxy, to handle static files and SSL encryption for https.</li>
+<li>A domain name and setting up the certificate</li>
+<li><strong>Gunicorn</strong> a production HTTP server for python supporting WSGI (Web Server Gateway Interface)</li>
+<li>Systemd a service manager which allows us to start our application on server boot.</li>
+</ol>
+<p>A request arrives to nginx, if the file is static it will be served directly. If it is an url which needs to be handled by python/Flask it will be forwarded to the application server (gunicorn). The communication between nginx and gunicorn can be done via tcp/ip or via unix domain socket on the same machine.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/48eb9b8ef9e0dbd7.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Static Web Server" duration="10">
+        <p>On a virtual machine with Debian or Ubuntu which <strong>has a public ip</strong>.</p>
+<p>Cloud provider not your local virtual machine!</p>
+<h2 is-upgraded><strong>Install Nginx</strong></h2>
+<pre>sudo apt update
+sudo apt install nginx</pre>
+<p>After installing it, you already have everything you need.</p>
+<h2 is-upgraded>Test your site</h2>
+<p>You can point your browser to your server public IP address. You should see this page:</p>
+<p class="image-container"><img style="width: 624.00px" src="img/10755dc1741e7dd2.png"></p>
+<p>If you see this page, you have successfully installed Nginx on your web server.</p>
+<aside class="warning"><p><strong>Firewall:</strong> Be sure to enable http (port 80) and https (port 4439  rules in your firewall / Security Groups of the cloud provider.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Register a DNS name for VM" duration="10">
+        <p>Our guestbook web site requires a name so we don&#39;t have to remember the <code>external IP</code> address to access it.  To do so, visit a free DNS registration service and register a name on the VM&#39;s external IP address.</p>
+<p><strong>Once this is done you should be able to see the nginx starting page with a domain name instead of the ip.</strong></p>
+<aside class="warning"><p><strong>Common Error:</strong> Check that you are using http:// and not https:// sometimes the browser adds it and the http is hidden.</p>
+</aside>
+<p>Example services include</p>
+<ul>
+<li><a href="https://www.name.com/partner/github-students" target="_blank">https://www.name.com/partner/github-students</a></li>
+<li><a href="https://www.duckdns.org/" target="_blank">duckdns.org</a></li>
+<li><a href="https://freedns.afraid.org/" target="_blank">freeDNS</a></li>
+<li><a href="https://ipq.co/" target="_blank">ipq.co</a></li>
+<li><a href="https://www.noip.com/" target="_blank">noip.com</a></li>
+<li><a href="http://nip.io/" target="_blank">nip.io</a></li>
+<li><a href="https://sslip.io/" target="_blank">sslip.io</a></li>
+</ul>
+<p>Note that if you get a rate-limit error on Let&#39;s Encrypt via one service, you will need to use the alternate ones.   This is a result of Let&#39;s Encrypt being abused by malicious actors to create web sites with valid certificates that look legitimate.  (This, of course, won&#39;t be an issue with our janky web application)</p>
+<h2 is-upgraded><strong>duckDNS</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/10c4b35f9f2bef3e.png"></p>
+<h2 is-upgraded><strong>freeDNS</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/9251669cc2693124.png"></p>
+<h2 is-upgraded><strong>ipq.co</strong></h2>
+<p class="image-container"><img style="width: 487.00px" src="img/c72bb907e47e4b12.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/7ec8fa9bcfa0edd.png"></p>
+<h2 is-upgraded><strong>noip.com</strong></h2>
+<p>(Note: omit the dash since it is not allowed).</p>
+<p class="image-container"><img style="width: 624.00px" src="img/f278fb35fac93bd3.png"></p>
+<h2 is-upgraded><strong>xip.io</strong></h2>
+<p>Some services allow you to specify a name that includes an IP address that it resolves to.  If you have difficulty with the sites above, then use names from the following xip-based sites.</p>
+<p class="image-container"><img style="width: 204.00px" src="img/1e37e29f1c9a61a5.png"></p>
+<p class="image-container"><img style="width: 512.00px" src="img/b3527399958afb7b.png"></p>
+<h2 is-upgraded><strong>nip.io</strong></h2>
+<p class="image-container"><img style="width: 348.00px" src="img/8dd34745aa8f7cf5.png"></p>
+<p class="image-container"><img style="width: 288.00px" src="img/c9ecf8cd3a75d241.png"></p>
+<h2 is-upgraded><strong>sslip.io</strong></h2>
+<p class="image-container"><img style="width: 201.00px" src="img/7e6692b05c2e6eb1.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/59ea3694fb4b8207.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup SSL Certificate" duration="10">
+        <p>We are going to use Let&#39;s Encrypt to get a free certificate. </p>
+<p class="image-container"><img style="width: 624.00px" src="img/3ddd9b60530c9389.png"></p>
+<p>Let&#39;s Encrypt is a non-profit certificate authority run by Internet Security Research Group that provides X.509 certificates for Transport Layer Security encryption at no charge.</p>
+<p>These certificates need to be renewed every 90 days. To simplify the process there exists a tool called <code>certbot</code> which handles the process.</p>
+<h2 is-upgraded><strong>Install certbot</strong></h2>
+<p>We are installing certbot and a nginx plugin which will handle the required changes in the web server configuration.</p>
+<pre>sudo apt-get install -y python3 certbot python3-certbot-nginx</pre>
+<h2 is-upgraded><strong>Generate certificate</strong></h2>
+<p>Let&#39;s generate our first certificate, we have to provide one or multiple domain names (replace <code><yourdomain.com></code>with your dns name, which point to the server.  Adding <code>--nginx -redirect</code></p>
+<p>Will configure nginx with the new SSL certificate and enable redirecting clients from http to https.</p>
+<pre>sudo certbot -d &lt;yourdomain.com&gt; --nginx --redirect</pre>
+<h2 is-upgraded><strong>Check that your site works with https</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/63ef6c5dc010f283.png"></p>
+<h2 is-upgraded><strong>Nginx configuration files</strong></h2>
+<p>Open nginx default site configuration files</p>
+<pre>sudo nano /etc/nginx/sites-enabled/default</pre>
+<p>Find all the lines added by certbot ending with  <code># managed by Certbot</code></p>
+<aside class="special"><p><strong>Did you know?: </strong>There are multiple server entries because you can have virtual hosts. Multiple DNS domains pointing to the same server ip. The correct folder is chosen based on the server_name entry in each server section.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Production App" duration="0">
+        <h2 is-upgraded><strong>Download application</strong></h2>
+<p>Clone the repository and change into the source directory</p>
+<pre>git clone https://github.com/bfritscher/guestbook-src.git
+cd guestbook-src/03_nginx_gunicorn_certbot</pre>
+<h2 is-upgraded><strong>Install python</strong></h2>
+<pre>sudo apt-get install -y python3 python3-pip python3-venv</pre>
+<h2 is-upgraded><strong>Create virtual env and install dependencies</strong></h2>
+<pre>python3 -m venv env
+source env/bin/activate
+pip3 install --upgrade -r requirements.txt</pre>
+<h2 is-upgraded><strong>Test Gunicorn server</strong></h2>
+<p>We are going to stop nginx and run gunicorn on port 80 just for testing. For that we need to run it as root. We provide gunicorn the name of the python module which contains a variable with the instantiation of a WSGI compatible application. In our guestbook app the app variable is inside the app.py file.</p>
+<pre>sudo systemctl stop nginx
+sudo gunicorn app:app --bind 0.0.0.0:80</pre>
+<p>Check that the guestbook app run by accessing it via the public ip on http.</p>
+<p><code>ctrl + c</code>  to exit the server</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup Reverse Proxy" duration="0">
+        <p>We will start gunicorn as a daemon (a program that executes in the background) and bind to a socket. We will then configure nginx to forward traffic to it.</p>
+<h2 is-upgraded><strong>Start gunicorn as a daemon</strong></h2>
+<p>We&#39;ll set an umask value of <code>007</code> so that the socket file is created giving access to the owner and group, while restricting other access</p>
+<p>Workers and threads settings depend on your machine cpu and ram.</p>
+<pre>gunicorn --workers 1 --threads 8 --bind unix:gunicorn.sock -m 007 app:app --daemon</pre>
+<h2 is-upgraded><strong>Configure the proxy</strong></h2>
+<p>Now let s edit <code>/etc/nginx/sites-enabled/default</code></p>
+<p>In the server block which listens to 443 edit locations to the following values after replacing PROJECT_DIR with the correct location.</p>
+<aside class="special"><p><strong>Hint: </strong>check your location with <code>pwd</code>, should be something like  <code>/home/ubuntu/guestbook-src/03_nginx_gunicorn_certbot</code></p>
+</aside>
+<pre><code>    location / {
+         include proxy_params;
+         proxy_pass http://unix:PROJECT_DIR/gunicorn.sock;
+     }
+
+     location /static {
+         alias PROJECT_DIR/static;
+     }</code></pre>
+<p>This will redirect everything to gunicorn except files under /static.</p>
+<h2 is-upgraded><strong>Fix permissions </strong></h2>
+<pre>chmod 755 $HOME</pre>
+<h2 is-upgraded><strong>Start nginx again</strong></h2>
+<pre>sudo systemctl start nginx</pre>
+<p>Test your guestbook app via the domain name. Everything should work now</p>
+<h2 is-upgraded><strong>Kill gunicorn</strong></h2>
+<pre>killall gunicorn</pre>
+<aside class="warning"><p><strong>Test:</strong> Go to your website app. What do you see?</p>
+<p>Can you see the image? <code>/static/sign_here.png</code></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Run as a Service" duration="0">
+        <p>Last step let&#39;s configure Gunicorn to start at boot like nginx.</p>
+<h2 is-upgraded><strong>Create service file</strong></h2>
+<p><code>systemd</code> is the default service manager for Ubuntu.  The file configures the startup of the <code>gunicorn</code> daemon and its environment.</p>
+<p>Create a service file <code>/etc/systemd/system/gunicorn-gb.service</code></p>
+<p>With the following content (again replace <code>PROJECT_DIR</code>) you also need to replace <code>PROJECT_USER</code> with your username (try <code>whoami</code>).</p>
+<aside class="special"><p><strong>Hint: </strong>use nano and sudo. If your venv is not named env you might need to adapt the paths.</p>
+</aside>
+<pre><code>[Unit]
+Description=Gunicorn instance to serve project
+After=network.target
+
+[Service]
+User=PROJECT_USER
+Group=www-data
+WorkingDirectory=PROJECT_DIR
+Environment=&#34;PATH=PROJECT_DIR/env/bin&#34;
+ExecStart=PROJECT_DIR/env/bin/gunicorn --workers 1 --threads 8 --bind unix:gunicorn.sock -m 007 app:app
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+<pre></pre>
+<h2 is-upgraded><strong>Start service and enable it at boot</strong></h2>
+<pre>sudo systemctl start gunicorn-gb
+sudo systemctl enable gunicorn-gb</pre>
+<p>Add an entry to the guestbook and restart the server  (<code>sudo restart</code>) to test if everything starts.</p>
+<aside class="special"><p><strong>Want more: </strong>Checkout <a href="https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-22-04" target="_blank">How To Serve Flask Applications with Gunicorn and Nginx on Ubuntu 22.04</a>.</p>
+</aside>
+<aside class="warning"><p><strong>Optional:</strong> Can you combine this with the postgresql version? And install PostgreSQL?</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Clean up" duration="0">
+        <h2 is-upgraded><strong>If you are on a paying cloud provider do not forget to clean up!</strong></h2>
+<p>(on switch engine you can shelve the instance)</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+
+</body>
+</html>

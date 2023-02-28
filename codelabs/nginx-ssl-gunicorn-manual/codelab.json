@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-02-28T14:57:56Z",
+  "id": "nginx-ssl-gunicorn-manual",
+  "duration": 30,
+  "title": "Production Ready Guestbook on a VM with SSL",
+  "authors": "Boris Fritscher, Wu-chang Feng",
+  "summary": "Deploy a web application with nginx on a VM, register a DNS name for it, and obtain a TLS certificate.",
+  "source": "1ZnedfbXuHABnBOH5qvxm2RzdxSGrASX3t76-apECpFU",
+  "theme": "vm",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vm",
+    "guestbook",
+    "openstack"
+  ],
+  "tags": [
+    "cloud"
+  ],
+  "feedback": "https://docs.google.com/document/d/1ZnedfbXuHABnBOH5qvxm2RzdxSGrASX3t76-apECpFU/edit?usp=sharing",
+  "url": "nginx-ssl-gunicorn-manual"
+}
