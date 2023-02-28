@@ -1,0 +1,168 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Nginx Compute Engine Guestbook</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+  <script defer data-domain="learn.fritscher.ch" data-api="https://fritscher.ch/s/api/event" src="https://fritscher.ch/s/js/script.hash.outbound-links.js"></script>
+  <script>
+    const originalReplaceState = history.replaceState;
+    if (originalReplaceState) {
+        window.history.replaceState = function (data, title, url) {
+            originalReplaceState.apply(this, [data, title, url]);
+            if (window.plausible) {
+                window.plausible('pageview');
+            }
+        }
+    }
+  </script>
+</head>
+<body>
+  
+  <google-codelab codelab-gaid=""
+                  id="nginx-compute-gb"
+                  title="Nginx Compute Engine Guestbook"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/1964Zp5NTQCXK1_aEfBEIv2i9Z-FI_pzF3jxt785Tyfk/edit?usp=sharing">
+    
+      <google-codelab-step label="Compute Engine VM" duration="10">
+        <p class="image-container"><img style="width: 624.00px" src="img/7111b24c121437f7.png"></p>
+<p>Visit GCP&#39;s Compute Engine and start configuring an instance with the following:</p>
+<ul>
+<li><code>us-west1-b</code> zone</li>
+<li>Ubuntu 22.04 LTS</li>
+<li>HTTP and HTTPS traffic enabled</li>
+</ul>
+<p>Create the instance.  When it comes up, note its <code>External IP</code> address.  You will be using this address in subsequent steps.</p>
+<p>Note that the instance may also be launched from Cloud Shell via the gcloud SDK using the command, which will output the <code>External IP</code> address upon completion</p>
+<pre>gcloud compute instances create nginx-gb \
+  --image-family=ubuntu-2204-lts \
+  --image-project=ubuntu-os-cloud \
+  --zone=us-west1-b \
+  --machine-type=e2-micro \
+  --tags=http-server,https-server</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Register a DNS name for VM" duration="10">
+        <p>Our guestbook web site requires a name so we don&#39;t have to remember the <code>external IP</code> address to access it.  To do so, visit a free DNS registration service and register a name on the VM&#39;s external IP address.</p>
+<p>Example services include</p>
+<ul>
+<li><a href="https://www.name.com/partner/github-students" target="_blank">https://www.name.com/partner/github-students</a></li>
+<li><a href="https://www.duckdns.org/" target="_blank">duckdns.org</a></li>
+<li><a href="https://freedns.afraid.org/" target="_blank">freeDNS</a></li>
+<li><a href="https://ipq.co/" target="_blank">ipq.co</a></li>
+<li><a href="https://www.noip.com/" target="_blank">noip.com</a></li>
+<li><a href="http://nip.io/" target="_blank">nip.io</a></li>
+<li><a href="https://sslip.io/" target="_blank">sslip.io</a></li>
+</ul>
+<p>Note that if you get a rate-limit error on Let&#39;s Encrypt via one service, you will need to use the alternate ones.   This is a result of Let&#39;s Encrypt being abused by malicious actors to create web sites with valid certificates that look legitimate.  (This, of course, won&#39;t be an issue with our janky web application)</p>
+<h2 is-upgraded><strong>duckDNS</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/10c4b35f9f2bef3e.png"></p>
+<h2 is-upgraded><strong>freeDNS</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/9251669cc2693124.png"></p>
+<h2 is-upgraded>ipq.co</h2>
+<p class="image-container"><img style="width: 487.00px" src="img/c72bb907e47e4b12.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/7ec8fa9bcfa0edd.png"></p>
+<h2 is-upgraded><strong>noip.com</strong></h2>
+<p>(Note: omit the dash since it is not allowed).</p>
+<p class="image-container"><img style="width: 624.00px" src="img/f278fb35fac93bd3.png"></p>
+<h2 is-upgraded><strong>xip.io</strong></h2>
+<p>Some services allow you to specify a name that includes an IP address that it resolves to.  If you have difficulty with the sites above, then use names from the following xip-based sites.</p>
+<p class="image-container"><img style="width: 204.00px" src="img/1e37e29f1c9a61a5.png"></p>
+<p class="image-container"><img style="width: 512.00px" src="img/b3527399958afb7b.png"></p>
+<h2 is-upgraded><strong>nip.io</strong></h2>
+<p class="image-container"><img style="width: 348.00px" src="img/8dd34745aa8f7cf5.png"></p>
+<p class="image-container"><img style="width: 288.00px" src="img/c9ecf8cd3a75d241.png"></p>
+<h2 is-upgraded><strong>sslip.io</strong></h2>
+<p class="image-container"><img style="width: 201.00px" src="img/7e6692b05c2e6eb1.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/59ea3694fb4b8207.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Checkout code" duration="10">
+        <p>We will now set up our guestbook web site on the Compute Engine VM and use the name from the prior step to obtain a TLS certificate. </p>
+<p>If you are using a Compute Engine VM, <code>ssh</code> into it from the Web UI</p>
+<p class="image-container"><img style="width: 624.00px" src="img/71bf99f20561eab5.png"></p>
+<p>or from Cloud Shell via</p>
+<pre>gcloud compute ssh nginx-gb</pre>
+<p>Once connected to the VM, clone the repository and change into the source directory</p>
+<pre>git clone https://github.com/bfritscher/guestbook-src.git
+cd guestbook-src/03_nginx_gunicorn_certbot</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Examine code" duration="10">
+        <p>We will now examine the code and configuration of our application.</p>
+<h3 is-upgraded>etc/systemd.template</h3>
+<p>The repository contains template files for configuring the server and <code>nginx</code> to run the Guestbook code.  These templates will generate corresponding files in <code>/etc</code>, the directory where Linux configuration files are stored.  The first template is <code>etc/systemd.template</code>.  <code>systemd</code> is the default service manager for Ubuntu.  The file configures the startup of the <code>gunicorn</code> daemon and its environment.  In addition, the working directory is set to <code>PROJECT_DIR</code>, which will be replaced on installation with your directory.  The <code>PATH</code> environment variable is set to the location where the Python environment&#39;s binaries will eventually be installed via a subsequent <code>venv</code>.   The last command configures the entry point for the Python application, sets the number of processes to use for it, and specifies the domain socket that will be used by the <code>nginx</code> web server to communicate with the web application.</p>
+<p class="image-container"><img style="width: 536.00px" src="img/7ca90d5f07ece479.png"></p>
+<p>The other template is <code>etc/nginx.template</code> which configures nginx with the server&#39;s DNS name (setup from the prior step) and the path to the root directory for the server.  It also specifies that requests to the top-level path (<code>/</code>) should go through the <code>gunicorn</code> socket and be handled by the Python application while requests to the <code>/static</code> path should be served directly by nginx from the specified directory.</p>
+<h3 is-upgraded><img style="width: 512.00px" src="img/688e052bde339a1f.png"><br>install.sh</h3>
+<p>The script used to setup the site is <code>install.sh</code></p>
+<p>The script takes two parameters: the DNS name you set-up earlier and your email (e.g. <code>./install.sh cs430-wuchang.ipq.co name@school.com</code>)</p>
+<p>The script begins by pulling out the first part of the DNS name (e.g. <code>cs430-wuchang</code>) and eliminating the first period and all subsequent characters.  The name is used to label the <code>systemd</code> service for the site.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/6fc57b05cb3f86c8.png"></p>
+<p>Then, the script installs <code>python3</code>, <code>venv</code>, <code>nginx</code>, and <code>certbot</code>.  It then creates the <code>venv</code> environment for the web application and installs its packages into it from <code>requirements.txt</code>.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/726f185999030cd9.png"></p>
+<p>Then, the script sets up a <code>systemd</code> startup file for the web site from its template using <code>sed</code> to replace the <code>PROJECT_DIR</code> with the current working directory (<code>$PWD</code>) and <code>PROJECT_USER</code> with the current user (<code>$SUDO_USER</code>).  It will then name the <code>systemd</code> service using the <code>$SITE</code> label above.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/290f1a0c7f9ae8f4.png"></p>
+<p>The script then sets up the <code>nginx</code> configuration file from its template using <code>sed</code>.  Similar substitutions are made as well as a substitution for <code>PROJECT_HOST</code> using the fully-qualified domain name (FQDN) of the site (registered earlier).  It also sets up <code>nginx</code> to add the site (via adding config file to <code>/etc/nginx/sites-available</code> and a link in <code>/etc/nginx/sites-enabled</code> to it)</p>
+<p class="image-container"><img style="width: 624.00px" src="img/fec6c4b40d739e5d.png"></p>
+<p>It then starts <code>systemd</code> service for the site, enables it by default (on startup), and restarts <code>nginx</code> for changes to take hold.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/ae971b5c449b624a.png"></p>
+<p>Finally, the script calls <code>certbot</code> to obtain the TLS certificate in non-interactive mode (see TLS slides on Let&#39;s Encrypt)</p>
+<p class="image-container"><img style="width: 624.00px" src="img/d3bf88311637909b.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install the application" duration="10">
+        <p>Run the script.  The script will configure your VM and obtain a certificate for your site.  Fill in <code><YourDNSNameHere></code> with the name you registered and your <code><YourEmail@domain.com></code>.</p>
+<pre>sudo ./install.sh &lt;YourDNSNameHere&gt; &lt;YourEmail@domain.com&gt;</pre>
+<p>Bring the site up in a browser and note it&#39;s valid certificate.  Add an entry to the guestbook.</p>
+<aside class="special"><p><strong>Test:</strong> Reboot the machine and test if the guestbook service starts automatically.</p>
+</aside>
+<ul>
+<li><strong>Take a screenshot of the site along with its Let&#39;s Encrypt certificate and include it in your lab notebook</strong></li>
+</ul>
+<p class="image-container"><img style="width: 624.00px" src="img/431d71177427bfaf.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Clean up" duration="10">
+        <p>Go to the web console of Compute Engine, find the VM in &#34;VM instances&#34; and select Delete. When prompted, confirm that you would like to delete the VM.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/bef84445dc975efa.png"></p>
+<p>This can also be done via Cloud Shell via:</p>
+<pre>gcloud compute instances delete nginx-gb --zone=us-west1-b</pre>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+
+</body>
+</html>
