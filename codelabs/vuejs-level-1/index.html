@@ -66,8 +66,10 @@
   &lt;body&gt;
     &lt;!-- Your HTML --&gt;
     &lt;h1&gt;My Site&lt;/h1&gt;
-    &lt;script src=&#34;https://unpkg.com/vue@3&#34;&gt;&lt;/script&gt;
     &lt;script type=&#34;module&#34;&gt;
+import { createApp } from &#34;https://unpkg.com/vue@3/dist/vue.esm-browser.js&#34;;
+
+
        /* Your code */
     &lt;/script&gt;
   &lt;/body&gt;
@@ -181,7 +183,7 @@
       </google-codelab-step>
     
       <google-codelab-step label="Exercise 8: Server Side Search" duration="0">
-        <p>Change the code so that the search field from exercise 4 does not filter the local list, but performs a search via the API instead<a href="https://dummyjson.com/" target="_blank">https://dummyjson.com</a> (<a href="https://dummyjson.com/products/search?q=" target="_blank">https://dummyjson.com/products/search?q=</a>&#39;).</p>
+        <p>Change the code so that the search field from exercise 4 does not filter the local list, but performs a search via the API instead <a href="https://dummyjson.com/" target="_blank">https://dummyjson.com</a> (<a href="https://dummyjson.com/products/search?q=" target="_blank">https://dummyjson.com/products/search?q=</a><em>search_term</em>).</p>
 <aside class="special"><p><strong>Hint:</strong> There are many ways to do this. You can hook into key events on the input or a more vue way would be to <code>watch</code> changes to the <code>v-model</code> value bound to the search.</p>
 </aside>
 <h2 is-upgraded><strong>Congratulations, you are ready for Level II.</strong></h2>
