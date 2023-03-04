@@ -1,0 +1,25 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-03-03T06:00:45Z",
+  "id": "vuejs-level-1",
+  "duration": 0,
+  "title": "Vue.js - Level I Exercices",
+  "authors": "Boris Fritscher, Rolf Hauri",
+  "summary": "Assignments to practice Vue.js in the browser",
+  "source": "1f-KJIKEWlYDvWlzUta4ud-UZWia-swd-Fkeq1mykk-k",
+  "theme": "vuejs",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vuejs"
+  ],
+  "tags": [
+    "interschool"
+  ],
+  "ga": "https://docs.google.com/document/d/1f-KJIKEWlYDvWlzUta4ud-UZWia-swd-Fkeq1mykk-k/edit?usp=sharing\u0026resourcekey=0-zFZ7vmYVK4uFKrBLTOCszA",
+  "url": "vuejs-level-1"
+}
