@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-03-04T04:38:11Z",
+  "id": "getting-started-with-vagrant-and-provisioning",
+  "duration": 0,
+  "title": "Getting Started with Vagrant and Provisioning",
+  "authors": "Boris Fritscher",
+  "summary": "Learn to use Vagrant to automate virtualbox machine creation and configuration.",
+  "source": "1v54ZeMzhQDvus_B2m8Jg3LnUmQRyzbCxQM5WA0Hnz-s",
+  "theme": "vagrant",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vagrant",
+    "vm"
+  ],
+  "tags": [
+    "cloud"
+  ],
+  "feedback": "https://docs.google.com/document/d/1v54ZeMzhQDvus_B2m8Jg3LnUmQRyzbCxQM5WA0Hnz-s/edit?usp=sharing",
+  "url": "getting-started-with-vagrant-and-provisioning"
+}

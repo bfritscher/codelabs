@@ -1,0 +1,193 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Getting Started with Vagrant and Provisioning</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+  <script defer data-domain="learn.fritscher.ch" data-api="https://fritscher.ch/s/api/event" src="https://fritscher.ch/s/js/script.hash.outbound-links.js"></script>
+  <script>
+    const originalReplaceState = history.replaceState;
+    if (originalReplaceState) {
+        window.history.replaceState = function (data, title, url) {
+            originalReplaceState.apply(this, [data, title, url]);
+            if (window.plausible) {
+                window.plausible('pageview');
+            }
+        }
+    }
+  </script>
+</head>
+<body>
+  
+  <google-codelab codelab-gaid=""
+                  id="getting-started-with-vagrant-and-provisioning"
+                  title="Getting Started with Vagrant and Provisioning"
+                  environment="web"
+                  feedback-link="https://docs.google.com/document/d/1v54ZeMzhQDvus_B2m8Jg3LnUmQRyzbCxQM5WA0Hnz-s/edit?usp=sharing">
+    
+      <google-codelab-step label="First VM" duration="0">
+        <h2 is-upgraded><img style="width: 624.00px" src="img/8bfb9d3de340e9d3.png"></h2>
+<p>Vagrant is a virtualization tool used to create development environments that can be consistently and easily re-produced among team members. Vagrant builds a Virtual Machine (VM) based on the specifications in the Vagrantfile. It uses ruby syntax.</p>
+<h2 is-upgraded><strong>Install Vagrant</strong></h2>
+<p>On windows you can use:</p>
+<pre>winget install vagrant</pre>
+<p>Other methods are available on <a href="https://developer.hashicorp.com/vagrant/downloads" target="_blank">the official site</a>.</p>
+<h2 is-upgraded><strong>Initialize a project</strong></h2>
+<p>Create a new directory and inside it execute</p>
+<pre>vagrant init debian/bullseye64</pre>
+<p>This will create a Vagrantfile inside it.</p>
+<aside class="special"><p><strong>Note:</strong> To find other pre-made Vagrant Boxes you can check the <a href="https://app.vagrantup.com/boxes/search" target="_blank">official directory</a>.</p>
+</aside>
+<p>Vagrant supports multiple Providers, which allow it to create virtual machines on different technologies: VirtualBox, VMware, Hyper-V. Many options are standardized, but for some there exists custom configuration. You can check the <a href="https://developer.hashicorp.com/vagrant/docs/providers/virtualbox" target="_blank">provider&#39;s documentation</a> for more details.</p>
+<p>Edit the <code>Vagrantfile</code> file and update the virtualbox section to this:</p>
+<h3 is-upgraded>Vagrantfile</h3>
+<pre><code>  config.vm.provider &#34;virtualbox&#34; do |vb|
+     vb.memory = &#34;1024&#34;
+     vb.cpus = 2
+  end</code></pre>
+<p>We are ready to start our first machine. On the command line in the same folder as the <code>Vagrantfile</code> do:</p>
+<pre>vagrant up</pre>
+<p>When the script finishes you will have a new VirtualBox VM up and running and ssh port forwarded so that you can connect to it.</p>
+<h2 is-upgraded>Connecting to the VM</h2>
+<p>Vagrant generates custom SSH keys for each VM.</p>
+<p>To connect to it you can do:</p>
+<pre>vagrant ssh</pre>
+<p>Or if you want to use you own ssh client you can get the connection information with:</p>
+<pre>vagrant ssh-config</pre>
+<aside class="warning"><p><strong>HINT:</strong> By default Vagrant tries to use the default ssh client, which on Windows might not work.</p>
+<p>On PowerShell you can tell vagrant to use the builtin vagrant ssh rather than using windows&#39; built-in ssh with:</p>
+<p><code> $Env:VAGRANT_PREFER_SYSTEM_BIN += 0</code></p>
+</aside>
+<h2 is-upgraded><strong>You can work inside your vm and then exit it.</strong></h2>
+<p>After exiting you can <code>vagrant halt</code>, <code>vagrant suspend</code> or even <code>vagrant destroy</code> your VM.</p>
+<p>Check <a href="https://developer.hashicorp.com/vagrant/docs/cli" target="_blank">the documentation</a> for more commands.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Provisioning" duration="0">
+        <p>It is useful to automate not only the creation of the VM, but also its initial configuration.</p>
+<p>Make sure that the VM is not running with:</p>
+<pre>vagrant status</pre>
+<h2 is-upgraded>Configure basic provisioning</h2>
+<p>Currently our machine is behind a NAT network and only forwarded ports are accessible. We will switch to a private host-only network and give a static ip to the VM.</p>
+<h3 is-upgraded>Vagrantfile</h3>
+<pre><code>...
+   config.vm.network &#34;private_network&#34;, ip: &#34;192.168.33.20&#34;
+...</code></pre>
+<p>Find the provision example in the file and adapt it to install nginx. The provision instruction can be inline shell commands or a path to a bash script.</p>
+<h3 is-upgraded>Vagrantfile</h3>
+<pre><code>...
+config.vm.provision &#34;shell&#34;, inline: &lt;&lt;-SHELL
+     apt-get update
+     apt-get install -y nginx
+  SHELL
+...</code></pre>
+<h2 is-upgraded>Start Virtual Machine</h2>
+<p>Upon starting Vagrant reconfigures the VM, adding the new network configuration.</p>
+<pre>vagrant up</pre>
+<p>However, since we already created the VM before, it will not automatically apply the provision script (to avoid running it multiple times).</p>
+<p>To force the provisioning use:</p>
+<pre>vagrant provision</pre>
+<p>We can now access our nginx at <a href="http://192.168.33.20" target="_blank">http://192.168.33.20</a></p>
+<p class="image-container"><img style="width: 624.00px" src="img/741ea773ed0862d6.png"></p>
+<h2 is-upgraded>Cleanup</h2>
+<p>If we now longer require the virtual machine we can delete it with:</p>
+<pre>vagrant destroy</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Multiple machines" duration="0">
+        <p>You can use a Vagrantfile to configure multiple machines. Options on <code>config.vm</code> Object apply to all VMs, but you can define custom settings inside a define block to create multiple machines.</p>
+<p>We will create a <code>web</code> and <code>db</code> machine on the same network to deploy the <a href="https://github.com/bfritscher/guestbook-src" target="_blank">guestbook app</a> with a separate PostgreSQL server.</p>
+<h3 is-upgraded>Vagrantfile</h3>
+<pre><code>Vagrant.configure(&#34;2&#34;) do |config|
+  config.vm.box = &#34;debian/bullseye64&#34;
+  config.vm.provider &#34;virtualbox&#34; do |vb|
+     vb.memory = &#34;1024&#34;
+     vb.cpus = 2
+  end
+
+  config.vm.define &#34;db&#34; do |db|
+    db.vm.hostname = &#34;db&#34;
+    db.vm.network &#34;private_network&#34;, ip: &#34;192.168.33.10&#34;
+    db.vm.provision &#34;shell&#34;, path: &#34;postgres-provision.sh&#34;
+  end
+
+  config.vm.define &#34;web&#34; do |web|
+    web.vm.hostname = &#34;web&#34;
+    web.vm.network &#34;private_network&#34;, ip: &#34;192.168.33.11&#34;
+
+  end
+end</code></pre>
+<p>In addition to the Vagrantfile create a new <code>postgres-provision.sh</code> file which installs PostgreSQL and configures it to accept external connections.</p>
+<h3 is-upgraded>postgres-provision.sh</h3>
+<pre><code>#!/bin/bash
+
+sudo apt-get update &amp;&amp; sudo apt-get -y install postgresql
+
+# set the default to listen to all addresses
+sudo sed -i &#34;/port*/a listen_addresses = &#39;*&#39;&#34; /etc/postgresql/13/main/postgresql.conf
+
+# allow any authentication mechanism from any client
+sudo sed -i &#34;$ a host all all all trust&#34; /etc/postgresql/13/main/pg_hba.conf
+
+# create db named guestbook and its user
+sudo su postgres -c &#34;createdb guestbook&#34;
+sudo su postgres -c &#34;psql -d guestbook -c \&#34;create user guestbook with encrypted password &#39;guestbook&#39;\&#34;&#34;
+sudo su postgres -c &#34;psql -d guestbook -c \&#34;grant all privileges on database guestbook to guestbook\&#34;&#34;
+
+
+# restart the service to allow changes to take effect
+sudo systemctl restart postgresql</code></pre>
+<h2 is-upgraded>Web Application</h2>
+<p>Setting up the web server</p>
+<p>Start by logging into the <code>web</code> VM.</p>
+<pre>vagrant ssh web</pre>
+<p>First try to manually deploy the <a href="https://github.com/bfritscher/guestbook-src/tree/main/02_mvp_modules_sqlite3" target="_blank">guestbook app</a> using the version inside the <code>02_mvp_modules_sqlite3</code> folder. By default it uses sqlite, to switch to PostgreSQL edit <code>gbmodel/__init__.py</code> and add a <code>.env</code> file with the required environment variables (look at .env.sample).</p>
+<aside class="special"><p><strong>Hint: Proceed as with previous guestbook labs</strong></p>
+<p>1. Install all required libraries git, python3, ... </p>
+<p>2. Create a Python Virtual Environment</p>
+<p>3. Configure app and run it</p>
+</aside>
+<p>Test that everything is running on <a href="http://192.168.33.11:5000/" target="_blank">http://192.168.33.11:5000/</a></p>
+<h2 is-upgraded>Automate Web Application Provisioning</h2>
+<p>It is your assignment to create the web <code>web-provision.sh</code> script and link it inside the <code>Vagrantfile</code>.</p>
+<p>Complete the scripts with the commands you tested with the manual install</p>
+<aside class="special"><p><strong>Hint:</strong> to replace inside a file you can use <code>sed - i "s/^</code><em><code>find</code></em><code>/</code><em><code>replace</code></em><code>/" </code><em><code>filepath</code></em></p>
+</aside>
+<aside class="special"><p><strong>Hint:</strong> to create a file from shell you can use <code>cat</code></p>
+</aside>
+<pre>cat &gt; filename &lt;&lt; EOF
+HELLO=world
+EOF</pre>
+<h2 is-upgraded><strong>Destroy and up the web VM to test it.</strong></h2>
+<p><strong>Going further (optional):</strong> Can you make a full setup with nginx and gunicorn?</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+
+</body>
+</html>
