@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
-  <title>Getting Started with SSH</title>
+  <title>Getting Started with Ansible</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
@@ -35,141 +35,342 @@
   
   <google-codelab codelab-gaid=""
                   id="getting-started-with-ssh"
-                  title="Getting Started with SSH"
+                  title="Getting Started with Ansible"
                   environment="web"
-                  feedback-link="https://docs.google.com/document/d/1ci1SNRYhqe8_ukLie9fj8CekiYplloqKLFqrje0h1Tc/edit?usp=sharing">
+                  feedback-link="https://docs.google.com/document/d/1nhZwc2VPXLcqrG6mkWyA0UFWGDP8-duJgcGAoWsvHtc/edit?usp=sharing">
     
-      <google-codelab-step label="Install SSH Server" duration="0">
-        <p>You&#39;ll learn how to configure SSH access to your Virtual Machine and set up password-less login.</p>
-<h2 is-upgraded><strong>Log in to the virtual machine and install ssh server software:</strong></h2>
-<pre>$ sudo apt-get install openssh-server</pre>
-<aside class="special"><p><strong>Note:</strong> If you do not have a Debian or Ubuntu Virtual Machine, first follow the Getting Started with a Virtual Machine lab. A network between the host computer and the virtual machine is also assumed.</p>
+      <google-codelab-step label="Install Ansible" duration="0">
+        <p class="image-container"><img style="width: 624.00px" src="img/aa2c80a104af0d94.png"></p>
+<p>Ansible is a suite of software tools that enables infrastructure as code. It is open-source and the suite includes software provisioning, configuration management, and application deployment functionality.</p>
+<p>In this lab we will use it to configure an existing server.</p>
+<aside class="warning"><p><strong>Requirements: </strong>You need a virtual machine wit<strong>h a public ip</strong>, which can be accessed via <strong>SSH with a key pair.</strong></p>
+<p><strong>For the example commands we assume that it is a debian OS with user debian who has sudo rights (default Switch Engine setup).</strong></p>
 </aside>
-<h2 is-upgraded><strong>Get your ip address with </strong></h2>
-<pre>$ ip address</pre>
-<h2 is-upgraded><strong>You can now connect from another machine or your host computer:</strong></h2>
-<pre>$ ssh debian@&lt;remote_host&gt; </pre>
-<p>Replace <code><remote_host></code> with the external ip from your virtual machine.</p>
-<p>Windows has a built-in SSH client that you can use in Windows Terminal.</p>
-<p>You can check that it is installed in Windows Settings &gt; Apps &gt; Optional features, then search for &#34;OpenSSH&#34; in your installed features.</p>
-<p class="image-container"><img style="width: 624.00px" src="img/f626912c0b30b282.png"></p>
-<p>On GNU/Linux Debian you can install the client with</p>
-<pre>$ sudo apt-get install openssh-client</pre>
+<h2 is-upgraded><strong>Install</strong></h2>
+<p>We can install ansible via a Linux package manager or via python.</p>
+<p>Install it for your current user on your machine or admin virtual machine. <strong>Not on the server to be configured!</strong></p>
+<aside class="warning"><p><strong>Warning:</strong> Ansible cannot be installed on windows use a vm or even better <strong>use WSL2</strong></p>
+</aside>
+<pre>pip install --user ansible ansible-lint ansible-navigator</pre>
+<p>If you use WSL2 you can copy your ssh keys from within the WSL2 Ubuntu shell:</p>
+<pre>cp -r /mnt/c/Users/&lt;username&gt;/.ssh ~/.ssh
+chmod 600 ~/.ssh/id_rsa</pre>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="SSH Keys" duration="0">
-        <p>We are going to generate a SSH key pair, which will allow us to connect without a password.</p>
-<h2 is-upgraded><strong>Create key</strong></h2>
-<p>On your host (windows) or in another vm generate your key pair.</p>
-<pre>PS&gt; ssh-keygen -t ed25519</pre>
-<h2 is-upgraded><strong>Upload key to vm</strong></h2>
-<p>On windows you can use this trick</p>
-<pre>PS&gt; type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh debian@&lt;remote_host&gt; &#34;cat &gt;&gt; .ssh/authorized_keys&#34;</pre>
-<p>On GNU/Linux</p>
-<pre>$ ssh-copy-id debian@&lt;remote_host&gt;</pre>
-<h2 is-upgraded><strong>Connect without password</strong></h2>
-<pre>PS&gt; ssh debian@&lt;remote_host&gt;</pre>
+      <google-codelab-step label="First Playbook" duration="0">
+        <aside class="warning"><p><strong>WSL2 Warning:</strong> prefer to work inside your <code>/home</code> directory rather than on <code>/mnt/c</code> as file access is slow and file permissions are creating problems.</p>
+</aside>
+<p>Create the project structure shown below. The <code>inventory</code> folder will contain all information to locate nodes which we will configure. The <code>templates</code> and <code>files</code> folder will contain files which need to be copied onto the remote nodes.</p>
+<aside class="special"><p><strong>Hint:</strong> You are free to edit files with the editor of your choice, but vscode via WSL remote connection is a good tool to try. For more details check out <a href="https://code.visualstudio.com/docs/remote/wsl" target="_blank">Developing in the Window Subsystem for Linux</a>.</p>
+</aside>
+<h3 is-upgraded><strong>Directory structure for our first project</strong></h3>
+<pre>first_ansible_project
+├── first_playbook.yaml
+├── inventory
+│   └── hosts
+├── files
+│   └── nginx.conf
+└── templates
+    └── index.html.j2</pre>
+<h2 is-upgraded>Setup Inventory</h2>
+<p>First we have to tell ansible how to access our remote server.</p>
+<p>Inside the inventory directory create a <code>hosts</code> files</p>
+<h3 is-upgraded>inventory/hosts</h3>
+<pre><code>[webservers]
+web1 ansible_host=w.x.y.z ansible_user=debian</code></pre>
+<p>Host can be defined in ini format or yaml. Above we have chosen ini format. An entry can be as simple as a domain name to get to the right ip. Or as we have done, be a name associated with an ip and additional options. Here we inform ansible to use debian user as for attempting the connection in case our local username is different. Additionally our web1 is in the webservers group. Host can be referenced in ansible by name, groupname or all.</p>
+<h2 is-upgraded>Test Connection</h2>
+<p>Test that the connection works by executing the following command</p>
+<pre>ansible -i inventory all -m ping</pre>
+<p>This will try to execute module ping on all hosts defined in the inventory.</p>
+<h2 is-upgraded><strong>First Play</strong></h2>
+<p>Create the playbook</p>
+<h3 is-upgraded><strong>first.yaml </strong></h3>
+<pre><code>- name: Configure webserver with nginx
+  hosts: web1
+  become: true
+  tasks:
+    - name: Ensure nginx is installed
+      ansible.builtin.package:
+        name:
+          - nginx
+        state: present
+        update_cache: true</code></pre>
+<p>This will execute one task with the package module to ensure that nginx is installed on the remote server. <code>become: true</code> (using sudo for commands)  at the playbook level will get applied to all tasks.</p>
+<aside class="special"><p><strong>Hint:</strong> On VSCode you can use <a href="https://marketplace.visualstudio.com/items?itemName=redhat.ansible" target="_blank">ansible extension</a> to have code completion and hinting.</p>
+</aside>
+<p>Run the playbook</p>
+<pre>ansible-playbook -i inventory first.yaml</pre>
+<p>Test if nginx is available on the server&#39;s public ip.</p>
+<h2 is-upgraded><strong>Customize Nginx</strong></h2>
+<p>Prepare two files which will be copied onto the server to have our custom html page.</p>
+<p>First we will replace the default nginx configuration with our own.</p>
+<h3 is-upgraded><strong>files/nginx.conf</strong></h3>
+<pre><code>server {
+        listen 80 default_server;
+        listen [::]:80 default_server ipv6only=on;
+
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+
+        server_name localhost;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}
+</code></pre>
+<p>We will also create our own <code>index.html</code> file, but we want to adapt it automatically to the servers to which it is copied to. Ansible uses the jinja2 template engine as does Flask. This allows us to inject variables into text files. Here we will use the inventory_hostname as defined in our hosts file.</p>
+<h3 is-upgraded><strong>templates/index.html.j2</strong></h3>
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Welcome to ansible&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+  &lt;h1&gt;Nginx, configured by Ansible&lt;/h1&gt;
+  &lt;p&gt;If you can see this, Ansible successfully installed nginx.&lt;/p&gt;
+
+  &lt;p&gt;Running on &#123;&#123; inventory_hostname }}&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Adapt the play book to copy these files and restart nginx.</p>
+<h3 is-upgraded><strong>first.yaml </strong></h3>
+<pre><code>- name: Configure webserver with nginx
+  hosts: web1
+  become: true
+  tasks:
+    - name: Ensure nginx is installed
+      ansible.builtin.package:
+        name:
+          - nginx
+        state: present
+        update_cache: true
+    - name: Copy nginx config file
+      ansible.builtin.copy:
+        src: nginx.conf
+        dest: /etc/nginx/sites-available/default
+        owner: www-data
+        group: www-data
+        mode: 0644
+    - name: Ensure default site is enabled
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+    - name: Copy home page template
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /usr/share/nginx/html/index.html
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+</code></pre>
+<h2 is-upgraded><strong>Run this new version and look at the homepage</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/d25201776226975b.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/ad3c25972c518a97.png"></p>
+<h2 is-upgraded><strong>Run the playbook a second time</strong></h2>
+<p>You will see that only restart is executed again, all the other task are not applied as they already are in the correct state. This is Ansible&#39;s <a href="https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html#term-Idempotency" target="_blank">Idempotency</a> in action <em>(An operation is idempotent if the result of performing it once is exactly the same as the result of performing it repeatedly without any intervening actions)</em>. </p>
+<p class="image-container"><img style="width: 624.00px" src="img/8fb0b2f2c98e2e9d.png"></p>
+<h2 is-upgraded><strong>Adapt the configuration to only restart nginx when necessary</strong></h2>
+<p>By adding the restart task to a new handlers section instead of tasks and using the notify attribute whenever we required the restart to be triggered if a change occurred. We can make the restart depend on the execution of another task.</p>
+<h3 is-upgraded><strong>first.yaml </strong></h3>
+<pre><code>- name: Configure webserver with nginx
+  hosts: web1
+  become: true
+  tasks:
+    ...
+    - name: Ensure default site is enabled
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      notify: Restart nginx
+    - name: Copy home page template
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /usr/share/nginx/html/index.html
+
+  handlers:
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+</code></pre>
+<p>Run to test if nginx restarted is trigger or not</p>
+<p class="image-container"><img style="width: 624.00px" src="img/d5dccbc8bb0e3c0.png"></p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Port Forwarding" duration="0">
-        <aside class="special"><p><strong>Note:</strong> It is assumed that you have a running PostgreSQL server on your virtual machine.</p>
+      <google-codelab-step label="Configure and deploy a guestbook app automatically" duration="0">
+        <p>We previously deployed a production ready guestbook app with SSL by hand. This time we will create an ansible playbook which does everything for us.</p>
+<aside class="warning"><p><strong>Requirements:</strong> You need a <a href="https://www.duckdns.org/" target="_blank">duckdns.org</a> account and domain with your token.</p>
+<p>You need to have done the previous labs or have an understanding of: services, nginx proxy_pass, gunicorn and certbot.</p>
 </aside>
-<p>We want to connect to the Database Server from a Tool on our host machine. However, by default you cannot connect directly to a PostgreSQL server from an external connection. They are disabled by in  <code>pg_hba.conf</code> (more on this in another lab).</p>
-<h2 is-upgraded><strong>Connect via SSH port forwarding</strong></h2>
-<p>Before connecting you can specify a local port which will be mapped to a remote host and ip. Lets redirect traffic from the host DB port to the localhost DB port inside the virtual machine.</p>
-<pre>PS&gt; ssh -L 5432:127.0.0.1:5432 debian@&lt;remote_host&gt;</pre>
-<h2 is-upgraded><strong>Test the connection</strong></h2>
-<p>Use VScode <a href="https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools" target="_blank">SQLTools</a> with <a href="https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools-driver-pg" target="_blank">PostgreSQL drivers</a> to connect to the database:</p>
-<p><em>Adapt the credentials according to your setting</em></p>
-<p class="image-container"><img style="width: 624.00px" src="img/228271a2a07f1be1.png"></p>
-<p>You can then explore the database.</p>
-<p class="image-container"><img style="width: 624.00px" src="img/16ef6110ba0c35b3.png"></p>
+<p>The app is <a href="https://github.com/bfritscher/guestbook-src/" target="_blank">03_nginx_gunicorn_certbot</a>, which we will clone from github and then run in a python virtual environment via gunicorn. Static files are served by nginx the other request are proxied to gunicorn.</p>
+<h2 is-upgraded><strong>Create a new nginx template file</strong></h2>
+<p>We will configure nginx to serve files and proxy the rest. As the domain name might change we will use a template with a variable (<code>service_host</code>)  instead of hardcoding it into the file. The project folder (<code>project_dir</code>) is also a variable.</p>
+<h3 is-upgraded><strong>templates/http.conf.j2</strong></h3>
+<pre><code>upstream backend {
+    server 127.0.0.1:8000;
+}
 
+server {
+  listen 80;
+  server_name &#123;&#123; service_host }};
+  root /usr/share/nginx/html;
+  index index.html;
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="SSH Keys with GitHub" duration="0">
-        <p>You can use your new SSH key to authenticate with GitHub and remove the need to enter your password for every git clone, pull or push action.</p>
-<h2 is-upgraded><strong>Add key to your Account</strong></h2>
-<p><a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account" target="_blank"><paper-button class="colored" raised>Follow the official tutorial</paper-button></a></p>
-<h2 is-upgraded><strong>Test your key</strong></h2>
-<p>Git clone a repository with the git/ssh url: <code>git@github.com:heg-web/[algopy-...].git</code></p>
+  location / {
+    proxy_pass http://backend;
+  }
 
+  location /static {
+    alias &#123;&#123; project_dir }}/03_nginx_gunicorn_certbot/static;
+  }
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="SSH Keys with Switch Engine" duration="0">
-        <p class="image-container"><img style="width: 108.00px" src="img/3beab74b3a392d69.png"></p>
-<p>We are going to create a new virtual machine on a cloud provider. In modern cloud infrastructure, login is mostly done via SSH keys. The key is directly added to the virtual machine at creation and allows login without ever setting a password.</p>
-<h2 is-upgraded><strong>Add key to Switch Engines</strong></h2>
-<ol type="1" start="1">
-<li>Login with your edu-id account on <a href="https://engines.switch.ch/horizon/quickstart/#/" target="_blank">https://engines.switch.ch/horizon/quickstart/#/</a></li>
-<li>Switch Region to LS (on the top)</li>
-<li>Go to <code>Project > Compute > Key Pairs</code> and click <code>Import Public Key</code></li>
-</ol>
-<aside class="warning"><p><strong>Important:</strong> You only provide your <strong>PUBLIC</strong> key (file ending in .pub). The private key <strong>must</strong> be kept on your system only!</p>
+}
+</code></pre>
+<aside class="special"><p><strong>Did you notice?</strong> In the manual lab we used a unix socket to connect with gunicorn. In this one we will use TCP/IP to define the upstream.</p>
 </aside>
-<aside class="special"><p><strong>Need more?</strong> Checkout the official switch engine documentation: <a href="https://help.switch.ch/de/engines/documentation/creating---importing-ssh-keys/?sbquery=click%20call" target="_blank">ssh-key</a> and <a href="https://help.switch.ch/engines/documentation/start-virtual-machines/" target="_blank">virtual machines</a></p>
+<h2 is-upgraded><strong>Create a service template file</strong></h2>
+<p>We define the service template file with project directory</p>
+<aside class="warning"><p><strong>Important:</strong>  The bind type and port must match between this file and nginx&#39;s proxy_pass.</p>
 </aside>
-<h2 is-upgraded>Create your first virtual machine on switch engine</h2>
-<p>Use <code>Quickstart > Instances > Create Instance</code></p>
-<p>Create a simple virtual machine with the following options:</p>
-<pre><code>OS: Debian 11
-CPU: 2 
-Ram: 2GB 
-Volume: 10GB / Standard
-SSH Keypairs: your imported key</code></pre>
-<h2 is-upgraded>Connect to your new virtual machine</h2>
-<p>Use the displayed external ip to connect to your new machine from your host.</p>
-<pre>PS&gt; ssh debian@&lt;remote_host&gt;</pre>
-<p>Run the lscpu command</p>
-<pre>$ lscpu</pre>
-<p><em>What is the Hypervisor used on this platform ?</em></p>
-<p>Go into the switch engine instances and look at your virtual machines&#39; advanced  settings.</p>
-<p><em>Which security Groups are applied?</em></p>
-<aside class="warning"><p><strong>Shutdown or Delete your instance when your no longer need it</strong></p>
+<h3 is-upgraded><strong>templates/gunicorn-gb.service.j2</strong></h3>
+<pre><code>[Unit]
+Description=gunicorn instance to serve Flask app
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=&#123;&#123; project_dir }}/03_nginx_gunicorn_certbot/
+Environment=&#34;PATH=&#123;&#123; project_dir }}/03_nginx_gunicorn_certbot/env/bin&#34;
+ExecStart=&#123;&#123; project_dir }}/03_nginx_gunicorn_certbot/env/bin/gunicorn --workers 1 --threads 8 --bind 127.0.0.1:8000 app:app
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<h2 is-upgraded><strong>New playbook</strong></h2>
+<p>In this playbook we will define and use our own variables. Adapt them to your project! </p>
+<p>We also prompt for the duckdns token to ensure that it is not saved in a file.</p>
+<aside class="warning"><p><strong>Important:</strong>  Use the full domain name as we use this variable to generate the SSL certificate.</p>
 </aside>
+<h3 is-upgraded><strong>guestbook.yaml</strong></h3>
+<pre><code>- name: Configure guestbook app
+  hosts: web1
+  become: true
+  vars:
+    project_dir: /usr/share/guestbook
+    service_host: &#34;gb-heg.duckdns.org&#34;
+    service_admin_email: &#34;boris.fritscher@he-arc.ch&#34;
+  vars_prompt:
+    - name: duckdns_token
+      prompt: Enter duckdns token
+      private: true
+  tasks:
+    - name: Ensure dependencies are installed
+      ansible.builtin.package:
+        name:
+          - nginx
+          - git
+          - python3
+          - python3-pip
+          - python3-venv
+          - certbot
+          - python3-certbot-nginx
+        state: present
+        update_cache: true
+    - name: Clone project from github
+      ansible.builtin.git:
+        repo: &#39;https://github.com/bfritscher/guestbook-src.git&#39;
+        depth: 1
+        single_branch: true
+        dest: &#34;&#123;&#123; project_dir }}&#34;
+    - name: Change ownership
+      ansible.builtin.file:
+        path: &#34;&#123;&#123; project_dir }}&#34;
+        owner: &#34;www-data&#34;
+        group: &#34;www-data&#34;
+        state: directory
+        recurse: true
+    - name: Copy nginx config file
+      ansible.builtin.template:
+        src: templates/http.conf.j2
+        dest: /etc/nginx/sites-available/default
+        owner: www-data
+        group: www-data
+        mode: 0644
+    - name: Ensure default site is enabled
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      notify: Restart nginx
+    - name: Update DuckDNS via api
+      ansible.builtin.uri:
+        url: &#34;https://www.duckdns.org/update?domains=&#123;&#123; service_host }}&amp;token=&#123;&#123; duckdns_token }}&amp;ip=&#123;&#123; hostvars[&#39;web1&#39;][&#39;ansible_host&#39;] }}&#34;
+        return_content: true
+      register: this
+      failed_when: &#34;&#39;OK&#39; not in this.content&#34;
+    - name: Generate certificate
+      ansible.builtin.shell: certbot --nginx -d &#123;&#123; service_host }} --noninteractive -m &#123;&#123;service_admin_email}} --agree-tos --redirect
+    - name: Install specified python requirements in indicated (virtualenv)
+      ansible.builtin.pip:
+        requirements: &#34;&#123;&#123; project_dir }}/03_nginx_gunicorn_certbot/requirements.txt&#34;
+        virtualenv: &#34;&#123;&#123; project_dir }}/03_nginx_gunicorn_certbot/env&#34;
+        virtualenv_command: /usr/bin/python3 -m venv
+    - name: Add service
+      ansible.builtin.template:
+        src: templates/gunicorn-gb.service.j2
+        dest: /etc/systemd/system/gunicorn-gb.service
+    - name: Register service
+      ansible.builtin.systemd:
+        name: gunicorn-gb
+        enabled: true
+        daemon_reload: true
+        state: restarted
+
+  handlers:
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
 
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="SSH Keys on Google Compute Engine" duration="0">
-        <p>We are going to test creating a virtual machine on Google Cloud.</p>
-<ol type="1" start="1">
-<li>Login to the <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
-<li>If it&#39;s your first time create a project and enable compute api. You can follow this tutorial: <a href="https://cloud.google.com/compute/docs/create-linux-vm-instance" target="_blank">Create a Linux VM instance in Compute Engine</a></li>
-<li>You should create a <strong>e2-micro</strong> instance in<strong> us-east</strong> region of your choice</li>
-<li>Edit the virtual machine options to add your <strong>PUBLIC</strong> SSH Key. After saving check the username linked to your key in the same place.</li>
-<li>Get the public ip address</li>
-</ol>
-<p>You can now connect with</p>
-<pre>PS&gt; ssh &lt;username&gt;@&lt;remote_host&gt;</pre>
-<p>Run the lscpu command</p>
-<pre>$ lscpu</pre>
-<p><em>What is the Hypervisor used on this platform ?</em></p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Dynamic Port Forwarding" duration="0">
-        <p>As we have a virtual machine located in the US region we will try SSH Socks forwarding.</p>
-<p>Reconnect via ssh but with Dynamic Port Forwarding</p>
-<pre>PS&gt; ssh -D 7777 &lt;username&gt;@&lt;remote_host&gt;</pre>
-<p>Use  this  socks proxy <code>127.0.0.1:7777</code> with one of your browsers.</p>
-<p>For example in Firefox:</p>
-<p class="image-container"><img style="width: 624.00px" src="img/f9ec0a2ae03eac8a.png"></p>
-<h2 is-upgraded>Where are we?</h2>
-<p>Now go to <a href="https://whatismyipaddress.com/" target="_blank">https://whatismyipaddress.com/</a></p>
-<p>Try to play a video from <a href="https://www.rts.ch/" target="_blank">https://www.rts.ch/</a> </p>
-<p><em>Does it work?</em></p>
-<aside class="warning"><p><strong>Delete your instance to save your credits!</strong></p>
-</aside>
-<aside class="special"><p><strong>Want more:</strong> Try to create a Virtual Machine on Microsoft Azure with your <a href="https://azure.microsoft.com/en-us/free/students/" target="_blank">free student account</a>. Or try it on Amazon AWS (<a href="https://aws.amazon.com/free/" target="_blank">free tier</a>, but credit card required)</p>
-</aside>
+</code></pre>
+<p><strong>To know what parameters and tasks are available it is necessary to search in the Ansible Documentation! </strong></p>
+<p>However here some details about some of the above tasks. </p>
+<h2 is-upgraded><strong>Git</strong></h2>
+<p>As we are only interested in the latest version of our files on the main branch. By specifying depth and single branch the clone will be much faster. These are git options exposed by the module.</p>
+<h2 is-upgraded><strong>Facts variables</strong></h2>
+<p>On the update duckdns url task we use <code>hostvars['web1']['ansible_host']</code> to get the hosts external ip from the hosts facts database. To get all available variables you can check for a specific host with:</p>
+<pre> ansible-inventory -i inventory --host web1</pre>
+<h2 is-upgraded><strong>Task return</strong></h2>
+<p>On the update duckdns url task we used a return in order to evaluate the result of the request to determine if the task should be marked as successful or not. Any task can return or register a result, which then can be displayed by a <a href="https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html" target="_blank">debug task</a>.</p>
+<h2 is-upgraded><strong>Shell tasks</strong></h2>
+<p>In the current configuration the shell task which runs certbot will always run. A better version would check if certbot needs to be run to be compatible with the Ansible&#39;s <a href="https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html#term-Idempotency" target="_blank">Idempotency</a> concept. This can be achieved with <a href="https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_conditionals.html" target="_blank">conditionals</a>. </p>
+<h2 is-upgraded><strong>Systemd</strong></h2>
+<p>Ansible often has generic and specific modules. Generic modules are preferred if possible because they work on multiple linux distribution for example for packages:</p>
+<ul>
+<li>ansible.builtin.package module – Generic OS package manager</li>
+<li>ansible.builtin.apt module – Manages apt-packages</li>
+</ul>
+<p>Or for services:</p>
+<ul>
+<li>ansible.builtin.service module – Manage services</li>
+<li>ansible.builtin.systemd module – Manage systemd units</li>
+</ul>
+<p>In our case we needed to be able to specify <code>daemon_reload</code> to be sure that changes are detected and integrated by systemd.</p>
+<h2 is-upgraded><strong>Run playbook</strong></h2>
+<pre>ansible-playbook -i inventory guestbook.yaml</pre>
+<p>You should be able to go to your duckdns domain with https and see the guestbook running!</p>
 
 
       </google-codelab-step>

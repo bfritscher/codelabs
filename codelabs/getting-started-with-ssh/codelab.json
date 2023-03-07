@@ -3,25 +3,24 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2023-02-27T22:01:11Z",
+  "updated": "2023-03-07T15:49:54Z",
   "id": "getting-started-with-ssh",
   "duration": 0,
-  "title": "Getting Started with SSH",
+  "title": "Getting Started with Ansible",
   "authors": "Boris Fritscher",
-  "summary": "In this codelab, you'll learn to use SSH to connect to remote machines and generate your own key pair.",
-  "source": "1ci1SNRYhqe8_ukLie9fj8CekiYplloqKLFqrje0h1Tc",
-  "theme": "vm",
+  "summary": "In this codelab, you'll learn to use Ansible to configure a server..",
+  "source": "1nhZwc2VPXLcqrG6mkWyA0UFWGDP8-duJgcGAoWsvHtc",
+  "theme": "ansible",
   "status": [
     "published"
   ],
   "category": [
-    "vm",
-    "openstack",
-    "cloud-compute-engine"
+    "ansible",
+    "vm"
   ],
   "tags": [
     "cloud"
   ],
-  "feedback": "https://docs.google.com/document/d/1ci1SNRYhqe8_ukLie9fj8CekiYplloqKLFqrje0h1Tc/edit?usp=sharing",
+  "feedback": "https://docs.google.com/document/d/1nhZwc2VPXLcqrG6mkWyA0UFWGDP8-duJgcGAoWsvHtc/edit?usp=sharing",
   "url": "getting-started-with-ssh"
 }
