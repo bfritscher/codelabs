@@ -56,6 +56,8 @@ $color-sql: #fc0;
 $color-vm: #00188f;
 $color-pulumi: #805ac3;
 $color-flask: #000000;
+$color-ansible: #1a1918;
+$color-terraform: #5c4ee5;
 
 /* Mixins */
 
@@ -248,3 +250,9 @@ $color-weave-green, 'weave.svg');
 
 @include codelab-card(['flask'],
   $color-flask, 'flask.png');
+
+@include codelab-card(['ansible'],
+  $color-ansible, 'ansible.svg');
+
+@include codelab-card(['terraform'],
+  $color-terraform, 'terraform.svg');
