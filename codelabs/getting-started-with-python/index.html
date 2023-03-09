@@ -59,6 +59,8 @@ Python 3.x.y</pre>
         <p><em>Adapted from: </em><a href="https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/" target="_blank"><em>https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/</em></a></p>
 <p>First make a project folder, and create a virtual environment inside it. To do so, open the terminal app, write the following command, and hit return.</p>
 <pre>$ mkdir myproject</pre>
+<p>Change directory into this new folder</p>
+<pre>$ cd myproject</pre>
 <p>Now, use the <code>venv</code> command to create a virtual environment inside the project folder, as follows:</p>
 <pre>$ python -m venv myproject/env</pre>
 <p>Check all the files created in the new folder <code>myproject/env</code></p>
@@ -66,8 +68,8 @@ Python 3.x.y</pre>
 </aside>
 <h2 is-upgraded><strong>Activating a Python Virtual Environment</strong></h2>
 <p>To activate the virtual environment, we created in the previous step, run the following command.</p>
-<pre>$ myproject\env\Scripts\Activate.ps1 -Prompt &#34;MyCustomEnvName&#34;
-(MyCustomEnvName) PS C:\...\myproject&gt;</pre>
+<pre>$ .\env\Scripts\Activate.ps1
+(env) PS C:\...\myproject&gt;</pre>
 <aside class="warning"><p><strong>Note:</strong> On Windows, it may be required to enable this Activate.ps1 script by setting the</p>
 <p>execution policy for the user. You can do this by issuing the following PowerShell</p>
 <p>command:</p>
@@ -82,26 +84,26 @@ Python 3.x.y</pre>
       <google-codelab-step label="Installing Packages" duration="0">
         <p><em>Adapted from: </em><a href="https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/" target="_blank"><em>https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/</em></a></p>
 <p>We are now inside an isolated virtual environment where only <code>pip</code> and <code>setup tools</code> are installed by default. Let&#39;s check the pre-installed packages on the virtual environment by running the <code>pip list</code> command.</p>
-<pre>(MyCustomEnvName) PS C:\tmp&gt; pip list
+<pre>(env) PS&gt; pip list
 Package    Version
 ---------- -------
 pip        22.3.1
 setuptools 65.5.0</pre>
 <p>Before we want to use <code>pip</code> to install any packages, let&#39;s upgrade it to the latest version. Since we&#39;re working inside the virtual environment, the following command only upgrades the <code>pip</code> tool inside this environment, not in the other virtual environments or system-wide.</p>
-<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install --upgrade pip</pre>
+<pre>(env) PS&gt; python -m pip install --upgrade pip</pre>
 <p>Let&#39;s rerun the <code>pip list</code> command to see the changes</p>
 <p>Now, let&#39;s install the pandas package into the environments. Before installing the package, you need to decide which version to install. If you&#39;re going to install the latest version, you can simply use the following command:</p>
-<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install pandas</pre>
+<pre>(env) PS&gt; python -m pip install pandas</pre>
 <p>But if you want to install a specific version of the package, you need to use this command:</p>
-<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install pandas==1.1.1</pre>
+<pre>(env) PS&gt; python -m pip install pandas==1.1.1</pre>
 <p>Now, let&#39;s see how we can tell pip that we are going to install any version of pandas before version 1.2.</p>
-<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install &#39;pandas&lt;1.2&#39;</pre>
+<pre>(env) PS&gt; python -m pip install &#39;pandas&lt;1.2&#39;</pre>
 <p>Also, we can ask pip to install the pandas package after version 0.25.3 as follows:</p>
-<pre>(MyCustomEnvName) PS C:\tmp&gt; python -m pip install &#39;pandas&gt;0.25.3&#39;</pre>
+<pre>(env) PS&gt; python -m pip install &#39;pandas&gt;0.25.3&#39;</pre>
 <aside class="special"><p><strong>Note:</strong> In the previous commands, we put the package specification between quotes, as greater than &gt; and less than &lt; signs have special meaning on the command-line shell. Both commands will install the latest version of the pandas package that matches the given constraints. However, the best practice is to specify packages with an exact version number.</p>
 </aside>
 <p>Let&#39;s review the list of installed packages in the environment.</p>
-<pre>(MyCustomEnvName) PS &gt; pip list
+<pre>(env) PS&gt; pip list
 Package    Version
 --------------- --------
 numpy           1.24.1
@@ -119,14 +121,14 @@ six             1.16.0</pre>
       <google-codelab-step label="Reproducing a Python Virtual Environment" duration="0">
         <p><em>Adapted from: </em><a href="https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/" target="_blank"><em>https://www.dataquest.io/blog/a-complete-guide-to-python-virtual-environments/</em></a></p>
 <p>It&#39;s common to reproduce a virtual environment. Assume your colleague is going to work on the same project that you have been working on for weeks. She needs to install exactly the same packages with the correct versions in a virtual environment on her system. To create identical environments, you first need to list all the dependencies installed in the project&#39;s virtual environment by using the <code>pip freeze</code> command.</p>
-<pre>(MyCustomEnvName) PS C:\tmp&gt; pip list
+<pre>(env) PS&gt; pip list
 numpy==1.24.1
 pandas==1.5.3
 python-dateutil==2.8.2
 pytz==2022.7.1
 six==1.16.0</pre>
 <p>The output of <code>pip freeze</code> is quite similar to <code>pip list</code>, but it returns the list of packages installed on an environment in a correct format to reproduce the environment with the exact package versions the project requires. The next step is exporting the package list into the <code>requirements.txt</code> file. To do so, run this command:</p>
-<pre>(MyCustomEnvName) PS C:\tmp&gt; pip freeze &gt; requirements.txt</pre>
+<pre>(env) PS&gt; pip freeze &gt; requirements.txt</pre>
 <p>The command above creates a text file named requirements.txt in the current folder. The requirements.txt file contains all the packages and their exact versions. </p>
 <aside class="special"><p><strong>Task:</strong> Create a new project and venv, activate it and install all packages with</p>
 <p><code>pip install -r requirements.txt</code></p>

@@ -167,6 +167,7 @@ sudo gunicorn app:app --bind 0.0.0.0:80</pre>
 <p>In the server block which listens to 443 edit locations to the following values after replacing PROJECT_DIR with the correct location.</p>
 <aside class="special"><p><strong>Hint: </strong>check your location with <code>pwd</code>, should be something like  <code>/home/ubuntu/guestbook-src/03_nginx_gunicorn_certbot</code></p>
 </aside>
+<h3 is-upgraded>/etc/nginx/sites-enabled/default</h3>
 <pre><code>    location / {
          include proxy_params;
          proxy_pass http://unix:PROJECT_DIR/gunicorn.sock;
@@ -198,6 +199,7 @@ sudo gunicorn app:app --bind 0.0.0.0:80</pre>
 <p>With the following content (again replace <code>PROJECT_DIR</code>) you also need to replace <code>PROJECT_USER</code> with your username (try <code>whoami</code>).</p>
 <aside class="special"><p><strong>Hint: </strong>use nano and sudo. If your venv is not named env you might need to adapt the paths.</p>
 </aside>
+<h3 is-upgraded>gunicorn-gb.service</h3>
 <pre><code>[Unit]
 Description=Gunicorn instance to serve project
 After=network.target
