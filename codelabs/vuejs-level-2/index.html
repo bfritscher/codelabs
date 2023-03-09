@@ -1,0 +1,249 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Vue.js - Level II Exercices</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+  <script defer data-domain="learn.fritscher.ch" data-api="https://fritscher.ch/s/api/event" src="https://fritscher.ch/s/js/script.hash.outbound-links.js"></script>
+  <script>
+    const originalReplaceState = history.replaceState;
+    if (originalReplaceState) {
+        window.history.replaceState = function (data, title, url) {
+            originalReplaceState.apply(this, [data, title, url]);
+            if (window.plausible) {
+                window.plausible('pageview');
+            }
+        }
+    }
+  </script>
+</head>
+<body>
+  
+  <google-codelab codelab-gaid="https://docs.google.com/document/d/1AeC3aGLfqQZu2cglsnTDbRWQLTD6OHHaAP6XX1A4A2k/edit?usp=sharing"
+                  id="vuejs-level-2"
+                  title="Vue.js - Level II Exercices"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Directive" duration="0">
+        <aside class="special"><p>This series of exercises is aimed at validating Vue.js learning objectives level II and prepare you for the assessment.</p>
+</aside>
+<aside class="warning"><p><strong>Note:</strong> Don&#39;t waste time on the graphical part. (You can use the existing CSS files, modify it or use bootstrap.) The design is not part of the evaluation.</p>
+</aside>
+<h2 is-upgraded><strong>Objectif: You will build a small tool to manage orders of a delivery company.</strong></h2>
+<p>This time you will develop in a development environment with multiple files and tools to assist the development process: web server with auto reload, linting and more.</p>
+<p>First you will setup this environment, (some parts are already done for you). Then we will get into the requirements for the small application.</p>
+<aside class="warning"><p><strong>Warning:</strong> Carefully follow all the steps!</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup: Prerequisites" duration="0">
+        <p>You need to have the following tools installed:</p>
+<ul>
+<li>Download and install <a href="https://nodejs.org/" target="_blank">Node.js</a> to get <code>npm</code>.</li>
+<li>Download and install <a href="https://git-scm.com/download/win" target="_blank">Git</a> to get <code>git</code>.</li>
+<li>Download and install <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> to get <code>code</code>.</li>
+</ul>
+<p>Check that it works from the shell:</p>
+<pre>$ git --version
+git version X.Y.Z
+
+$ node --version
+vX.Y.Z
+
+$ code --version
+X.Y.Z
+...
+x64</pre>
+<aside class="special"><p><strong>Hint:</strong> For debugging Vue inside the browser the <a href="https://devtools.vuejs.org/guide/installation.html" target="_blank">Vue Devtools extensions</a> is also very handy</p>
+</aside>
+<p>Vue Devtools will allow you to debug Vue variables and computed easily.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/8f8b84728674cc5b.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/f4f8adeb2b861a6f.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup: Copy the starter project" duration="0">
+        <p>To get you started the senior developer of the project has already created the initial development environment. Create your own copy:</p>
+<p><a href="https://classroom.github.com/a/f3czDhvV" target="_blank"><paper-button class="colored" raised>Create my classroom assignment</paper-button></a></p>
+<h2 is-upgraded><strong>Accept the assignment</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/2cea5d41ad97cbab.png"></p>
+<h2 is-upgraded><strong>Refresh the page until you see a link</strong></h2>
+<p class="image-container"><img style="width: 624.00px" src="img/39790821a3c63051.png"></p>
+<h2 is-upgraded><strong>Clone your project</strong></h2>
+<p class="image-container"><img style="width: 588.00px" src="img/d22151a98653160b.png"></p>
+<aside class="warning"><p><strong>Warning:</strong> do not put git repositories into a OneDrive folder! Or other sync technology. You might get strange behaviors otherwise.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup: Use the development environment" duration="0">
+        <p>Change directory to your cloned folder <code>vuejs-exercises-level2-<username></code> </p>
+<p>Use the node package manager to Install the required dependencies (from the project&#39;s package.json file)</p>
+<pre>npm install</pre>
+<p>Run the development server (which has auto-reload)</p>
+<pre>npm run dev</pre>
+<p><em>Hint: Ctrl-C to exit</em></p>
+<p>This project is setup with two linter to help use follow best practice in code formatting and quality:</p>
+<ul>
+<li>ESLint for code quality</li>
+<li>Prettier for code formatting</li>
+</ul>
+<p>Run the following command to auto fix formatting and see errors.</p>
+<pre>npm run lint
+npm run format</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup: Project Structure" duration="0">
+        <p>This project has been created with the <a href="https://vuejs.org/guide/quick-start.html#creating-a-vue-application" target="_blank">create-vue</a> application and uses <a href="https://vuejs.org/guide/scaling-up/sfc.html" target="_blank">Vue Single-File Components</a> (sfc, the *.vue files). It allows to have javascript, html and css in a single file while style separating concerns.</p>
+<p>Additionally, this project setup uses <a href="https://router.vuejs.org/" target="_blank">vue-router</a> to have multiple client side virtual pages without using a server.</p>
+<p>The two files you will need to edit are:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong>Path</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>View</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>/</p>
+</td><td colspan="1" rowspan="1"><p>src/view/OrdersView.vue</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>/add</p>
+</td><td colspan="1" rowspan="1"><p>src/view/OrderAdd.vue</p>
+</td></tr>
+</table>
+<p>The starting code of view has been further split into multiple files</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong>File</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Description</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>index.html</p>
+</td><td colspan="1" rowspan="1"><p>The html outside of the vue  app (should not be edited, except for icon and title)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>main.js</p>
+</td><td colspan="1" rowspan="1"><p>The main entry point where the vue app is created and configured with plugins like vue-router</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>src/App.vue</p>
+</td><td colspan="1" rowspan="1"><p>The main Vue View, think of it as the layout of your site.</p>
+</td></tr>
+</table>
+<h2 is-upgraded><strong>Start coding!</strong></h2>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Application: the order list" duration="0">
+        <aside class="special"><p>Examples are provided to help you to understand the behavior of the application, but you are not required to arrive exactly at the same visual result.</p>
+</aside>
+<aside class="warning"><p><strong>Note:</strong> Follow the proposed steps!</p>
+</aside>
+<h2 is-upgraded><strong>The application manages the delivery of parcels.</strong></h2>
+<p>A Delivery has following attributes:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p><strong>Name</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>Type</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Date</strong></p>
+</td><td colspan="1" rowspan="1"><p>String (yyyy/mm/dd/) (might depend on your system locals)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Sender</strong></p>
+</td><td colspan="1" rowspan="1"><p>String</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Destination</strong></p>
+</td><td colspan="1" rowspan="1"><p>String</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Weight</strong></p>
+</td><td colspan="1" rowspan="1"><p>Number in Kg</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Status</strong></p>
+</td><td colspan="1" rowspan="1"><p>&#34;Confirmed&#34;, &#34;In delivering&#34;, &#34;Delivered&#34;</p>
+</td></tr>
+</table>
+<h2 is-upgraded><strong>Getting started</strong></h2>
+<p>Create a table to display all orders in <code>OrderView.vue</code>. The &#34;initial&#34; orders data are hard-coded in order to implement filtering and sorting.</p>
+<h3 is-upgraded><strong>Functionalities:</strong></h3>
+<p><strong>Filtering</strong></p>
+<ul>
+<li>The search box will filter the orders, searching at least  in the sender and destination fields</li>
+<li>A drop down should allow to filter on status (&#34;All Status&#34;== no filter, &#34;Confirmed&#34;, &#34;In delivering&#34;, &#34;Delivered&#34;)</li>
+</ul>
+<p><strong>Sorting:</strong></p>
+<ul>
+<li>Column headers allow sorting the orders. The sort order toggle on each click of the same column (ascending first then descending)</li>
+</ul>
+<p class="image-container"><img style="width: 600.50px" src="img/c5d60e8e8ca59ca4.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Application: persistence" duration="0">
+        <p>Implement persistence by saving and reading the order list to localStorage.</p>
+<h3 is-upgraded><strong>Functionalities:</strong></h3>
+<ul>
+<li>The first time the application loads, reading the data from localStorage will be empty. In this case populate the list with sample data.</li>
+<li>Otherwise restore the version from localStorage</li>
+<li>To test your code implement the <strong>delete </strong>functionally with a button to allow deleting a specific row.</li>
+</ul>
+<aside class="special"><p><strong>Hint:</strong> localStorage only accepts Strings, you must &#34;stringify/parse&#34; your data with JSON.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Application: adding an order" duration="0">
+        <p>Clicking on the &#34;Add new order&#34; button, switches to a new view (page).</p>
+<p>This page displays a form allowing to add a new order:</p>
+<p class="image-container"><img style="width: 223.50px" src="img/56c88449dab669d4.png"></p>
+<aside class="special"><p><strong>Hint:</strong> the date field is an input field which type is &#34;date&#34;: &lt;input type=&#34;date&#34; ... /&gt;</p>
+</aside>
+<h3 is-upgraded><strong>Functionalities:</strong></h3>
+<ul>
+<li>A warning message is shown if the fields are not all filled</li>
+<li>A warning message is shown if the weight is less than or equal to 0 kg</li>
+<li>When the &#34;Save&#34; button is clicked, the order is <strong>added to the stored orders </strong>and the application switches to the orders list (main page)</li>
+<li>When the &#34;Cancel&#34; button is clicked, the application switches back to the orders  list </li>
+</ul>
+<aside class="special"><p><strong>Good Practice:</strong>  In anticipation of a database use, you might add an id to each order. Generate it and store it when adding a new order.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="To go further..." duration="0">
+        <h2 is-upgraded><strong>Congratulations, you covered all the basics for today! </strong></h2>
+<p>If you want you can continue with the following suggestions:</p>
+<ul>
+<li>Allow to change the status directly in the list of orders view</li>
+</ul>
+<h2 is-upgraded>Learn more about components in the <a href="https://vuejs.org/tutorial/#step-11" target="_blank">tutorial</a><strong> and try to transform a table row into a component.</strong></h2>
+<p>This will be useful for bigger projects as well as understand how third party components libraries work.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+
+</body>
+</html>

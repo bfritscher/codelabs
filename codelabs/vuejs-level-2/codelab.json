@@ -1,0 +1,25 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-03-09T22:13:33Z",
+  "id": "vuejs-level-2",
+  "duration": 0,
+  "title": "Vue.js - Level II Exercices",
+  "authors": "Boris Fritscher, Rolf Hauri",
+  "summary": "Assignments to practice Vue.js in a development environment",
+  "source": "1AeC3aGLfqQZu2cglsnTDbRWQLTD6OHHaAP6XX1A4A2k",
+  "theme": "vuejs",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "vuejs"
+  ],
+  "tags": [
+    "interschool"
+  ],
+  "ga": "https://docs.google.com/document/d/1AeC3aGLfqQZu2cglsnTDbRWQLTD6OHHaAP6XX1A4A2k/edit?usp=sharing",
+  "url": "vuejs-level-2"
+}
